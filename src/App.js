@@ -274,7 +274,7 @@ const ComprehensivePortfolio = () => {
         {
           title: 'Extensive Experience',
           description: 'Over 20 years of expertise in various engineering and communication roles, particularly in diagnostics and field service',
-          impact: 'Proven track record across Tesla, Rivian, Fisker, and consulting'
+          impact: 'Proven track record across Tesla, Rivian, Fisker, and private consulting'
         },
         {
           title: 'Leadership Skills',
@@ -1357,7 +1357,7 @@ const ComprehensivePortfolio = () => {
         <footer className="bg-gray-900 text-white p-8 mt-12">
           <div className="text-center">
             <h3 className="text-2xl font-bold mb-4">Ready to Transform Your Operations?</h3>
-            <p className="text-gray-300 mb-6">Let's discuss how 20+ years of automotive engineering expertise can benefit your organization</p>
+            <p className="text-gray-300 mb-6">Let's discuss how 20+ years of engineering expertise can benefit your organization today</p>
             <div className="flex justify-center gap-4 mb-6">
               <div className="flex items-center gap-2">
                 <Phone size={20} />
