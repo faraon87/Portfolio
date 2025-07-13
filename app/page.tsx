@@ -7,7 +7,7 @@ import {
   Settings, Briefcase, GraduationCap, Building, Menu, X,
   ExternalLink, Download, Calculator, BookOpen, Play, Pause,
   Clock, TrendingUp, BarChart3, CheckCircle, AlertTriangle,
-  Brain, Cpu, Network, Shield, Database, Cloud, Wrench, RotateCcw
+  Brain, Cpu, Network, Shield, Database, Cloud, Wrench
 } from 'lucide-react'
 
 // Utility function
