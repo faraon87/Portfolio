@@ -963,7 +963,7 @@ function FloatingNav() {
     { name: "Experience", href: "#experience" }, 
     { name: "Projects", href: "#projects" },
     { name: "Skills", href: "#skills" },
-    { name: "ROI Calculator", href: "#roi-calculator" },
+    { name: "ROI", href: "#roi-calculator" },
     { name: "Training", href: "#training" },
     { name: "Contact", href: "#contact" },
   ]
