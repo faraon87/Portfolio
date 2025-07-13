@@ -12,18 +12,25 @@ import {
 } from 'lucide-react'
 
 // Utility function
-function cn(...classes) {
+function cn(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
 // EV Diagnostics Dashboard Component
 function EVDiagnosticsDashboard() {
-  const [selectedSystem, setSelectedSystem] = useState('BMS')
-  const [isScanning, setIsScanning] = useState(false)
-  const [diagnosticData, setDiagnosticData] = useState({})
+  const [selectedSystem, setSelectedSystem] = useState<string>('BMS')
+  const [isScanning, setIsScanning] = useState<boolean>(false)
+  const [diagnosticData, setDiagnosticData] = useState<any>({})
   
   // Real-time data simulation
-  const [realTimeData, setRealTimeData] = useState({
+  const [realTimeData, setRealTimeData] = useState<{
+    batterySOC: number
+    batterySOH: number
+    batteryTemp: number
+    motorTemp: number
+    batteryVoltage: number
+    motorPower: number
+  }>({
     batterySOC: 75.9,
     batterySOH: 94.6,
     batteryTemp: 39,
@@ -47,7 +54,13 @@ function EVDiagnosticsDashboard() {
     return () => clearInterval(interval)
   }, [])
   
-  const evSystems = [
+  const evSystems: Array<{
+    id: string
+    name: string
+    status: string
+    alerts: number
+    description: string
+  }> = [
     { id: 'BMS', name: 'Battery Management System', status: 'healthy', alerts: 0, description: 'SOC, SOH, Cell Balancing' },
     { id: 'Motor', name: 'Motor Control Unit', status: 'healthy', alerts: 0, description: 'Torque, Speed, Efficiency' },
     { id: 'Charging', name: 'Charging System', status: 'charging', alerts: 0, description: 'AC/DC Charging, Power Management' },
@@ -211,8 +224,34 @@ function EVDiagnosticsDashboard() {
 }
 
 // Project Card Component with Enhanced Details
-function ProjectCard({ title, company, period, description, achievements, technologies, challenges, solutions, impact, serviceRequirements, kpiFramework, hasDemo }) {
-  const [expanded, setExpanded] = useState(false)
+function ProjectCard({ 
+  title, 
+  company, 
+  period, 
+  description, 
+  achievements, 
+  technologies, 
+  challenges, 
+  solutions, 
+  impact, 
+  serviceRequirements, 
+  kpiFramework, 
+  hasDemo 
+}: {
+  title: string
+  company: string
+  period: string
+  description: string
+  achievements: string[]
+  technologies: string[]
+  challenges: string[]
+  solutions: string[]
+  impact: string
+  serviceRequirements?: any
+  kpiFramework?: any
+  hasDemo?: boolean
+}) {
+  const [expanded, setExpanded] = useState<boolean>(false)
 
   return (
     <div className="relative group">
@@ -353,7 +392,7 @@ function ProjectCard({ title, company, period, description, achievements, techno
 
 // Floating Navigation Component
 function FloatingNav() {
-  const [isVisible, setIsVisible] = useState(false)
+  const [isVisible, setIsVisible] = useState<boolean>(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -363,7 +402,10 @@ function FloatingNav() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const navItems = [
+  const navItems: Array<{
+    name: string
+    href: string
+  }> = [
     { name: "About", href: "#about" },
     { name: "Projects", href: "#projects" },
     { name: "Contact", href: "#contact" },
@@ -413,7 +455,11 @@ function FloatingNav() {
 }
 
 export default function Portfolio() {
-  const achievements = [
+  const achievements: Array<{
+    value: string
+    label: string
+    icon: any
+  }> = [
     { value: '$6.2M+', label: 'Cost Savings Generated', icon: DollarSign },
     { value: '300+', label: 'Professionals Trained', icon: Users },
     { value: '32K+', label: 'Engineering Escalations Resolved', icon: Code },
@@ -422,7 +468,20 @@ export default function Portfolio() {
     { value: '99.99%', label: 'Satellite Uptime Maintained', icon: Zap }
   ]
 
-  const projects = [
+  const projects: Array<{
+    title: string
+    company: string
+    period: string
+    description: string
+    achievements: string[]
+    technologies: string[]
+    challenges: string[]
+    solutions: string[]
+    impact: string
+    serviceRequirements?: any
+    kpiFramework?: any
+    hasDemo?: boolean
+  }> = [
     {
       title: 'Fisker Aftersales Service Tool (FAST)',
       company: 'Fisker',
