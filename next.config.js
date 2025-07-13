@@ -6,8 +6,7 @@ const nextConfig = {
   images: {
     unoptimized: true
   },
-  basePath: process.env.NODE_ENV === 'production' ? '/Portfolio' : '',
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/Portfolio/' : '',
+  // Remove basePath and assetPrefix for Vercel
   experimental: {
     // Remove any experimental features that might cause issues
   }
