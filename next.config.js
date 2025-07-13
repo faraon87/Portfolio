@@ -1,10 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    appDir: true,
+  output: 'export',
+  distDir: 'out',
+  trailingSlash: true,
+  images: {
+    unoptimized: true
   },
-  output: 'export', // for static export
-  distDir: 'out',   // if you want to change output folder (optional)
+  basePath: process.env.NODE_ENV === 'production' ? '/Portfolio' : '',
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/Portfolio/' : '',
+  experimental: {
+    // Remove any experimental features that might cause issues
+  }
 }
 
 module.exports = nextConfig
