@@ -1410,7 +1410,7 @@ const ComprehensivePortfolio = () => {
       {/* Top Navigation */}
       <div className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto">
-          <nav className="flex flex-wrap gap-2 p-4">
+          <nav className="flex flex-wrap gap-2 p-4 justify-center">
             {navigationSections.map((section) => (
               <button
                 key={section.id}
