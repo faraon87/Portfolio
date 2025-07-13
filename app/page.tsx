@@ -1,25 +1,222 @@
-import Link from "next/link"
-import { ArrowRight, Github, Linkedin, Mail } from "lucide-react"
+"use client"
 
-import { Button } from "@/components/ui/button"
-import { ProjectCard } from "@/components/project-card"
-import { SkillBadge } from "@/components/skill-badge"
-import { Timeline } from "@/components/timeline"
-import { ContactForm } from "@/components/contact-form"
-import { CreativeHero } from "@/components/creative-hero"
-import { FloatingNav } from "@/components/floating-nav"
-import { MouseFollower } from "@/components/mouse-follower"
-import { ScrollProgress } from "@/components/scroll-progress"
-import { SectionHeading } from "@/components/section-heading"
-import { GlassmorphicCard } from "@/components/glassmorphic-card"
+import { useState, useEffect } from 'react'
+import { 
+  ArrowRight, Github, Linkedin, Mail, Phone, DollarSign, Users, 
+  Code, Award, Globe, Zap, ChevronRight, Target, Activity,
+  Settings, Briefcase, GraduationCap, Building, Menu, X,
+  ExternalLink, Download
+} from 'lucide-react'
+
+// Utility function
+function cn(...classes: string[]) {
+  return classes.filter(Boolean).join(' ')
+}
+
+// Floating Navigation Component
+function FloatingNav() {
+  const [isVisible, setIsVisible] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsVisible(window.scrollY > 100)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  const navItems = [
+    { name: "About", href: "#about" },
+    { name: "Experience", href: "#experience" },
+    { name: "Projects", href: "#projects" },
+    { name: "Skills", href: "#skills" },
+    { name: "Contact", href: "#contact" },
+  ]
+
+  return (
+    <>
+      <div className={cn(
+        "fixed top-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-300",
+        isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
+      )}>
+        <div className="relative px-4 py-3 rounded-full bg-zinc-800/80 backdrop-blur-md border border-zinc-700/50 shadow-lg">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full blur opacity-50"></div>
+          <div className="relative flex items-center gap-1">
+            <span className="font-bold text-lg mr-4">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Ahmed</span>
+              <span className="text-white ml-1">Said</span>
+            </span>
+            {navItems.map((item) => (
+              <a
+                key={item.name}
+                href={item.href}
+                className="px-3 py-1 text-sm font-medium text-zinc-400 hover:text-white transition-colors"
+              >
+                {item.name}
+              </a>
+            ))}
+            <button className="ml-2 px-4 py-1 text-sm bg-gradient-to-r from-purple-500 to-pink-500 hover:from-pink-500 hover:to-purple-500 border-0 rounded-full text-white font-medium transition-all">
+              Resume
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
+// Achievement Card Component
+function AchievementCard({ value, label, icon: Icon }: { value: string, label: string, icon: any }) {
+  return (
+    <div className="relative group">
+      <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
+      <div className="relative p-6 bg-zinc-900/80 backdrop-blur-sm border border-zinc-700/50 rounded-lg">
+        <Icon className="w-8 h-8 text-purple-400 mb-4" />
+        <h3 className="text-2xl font-bold text-white mb-2">{value}</h3>
+        <p className="text-zinc-400 text-sm">{label}</p>
+      </div>
+    </div>
+  )
+}
+
+// Company Timeline Component
+function CompanyTimeline() {
+  const companies = [
+    { name: 'Evaluate Consulting', role: 'Founder & Multi-Domain Consultant', period: '2024-Present', color: 'bg-purple-500', industry: 'Cross-Industry Consulting' },
+    { name: 'Fisker', role: 'Service Product Manager & Engineer', period: '2022-2024', color: 'bg-green-500', industry: 'Electric Vehicles' },
+    { name: 'Rivian', role: 'Diagnostics Engineer', period: '2021-2022', color: 'bg-blue-500', industry: 'Electric Vehicles' },
+    { name: 'Tesla', role: 'Lead Field Remote Diagnostics Engineer', period: '2018-2021', color: 'bg-red-500', industry: 'Electric Vehicles' },
+    { name: 'Iridium', role: 'Product Support Engineer', period: '2014-2016', color: 'bg-indigo-500', industry: 'Satellite Communications' },
+    { name: 'Verizon', role: 'Technical Consultant', period: '2005-2014', color: 'bg-red-600', industry: 'Telecommunications' }
+  ]
+
+  return (
+    <div className="space-y-8">
+      {companies.map((company, index) => (
+        <div key={index} className="relative flex items-center group">
+          <div className={cn(
+            "w-4 h-4 rounded-full flex-shrink-0 z-10 border-4 border-zinc-900",
+            company.color
+          )}></div>
+          <div className="ml-6 flex-1">
+            <div className="bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-lg p-6 group-hover:border-purple-500/30 transition-all duration-300">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-2">
+                <h3 className="text-xl font-bold text-white">{company.name}</h3>
+                <span className="text-sm text-zinc-400 bg-zinc-700/50 px-3 py-1 rounded-full">
+                  {company.period}
+                </span>
+              </div>
+              <p className="text-purple-400 font-medium mb-1">{company.role}</p>
+              <p className="text-zinc-400 text-sm">{company.industry}</p>
+            </div>
+          </div>
+          {index < companies.length - 1 && (
+            <div className="absolute left-2 top-8 w-0.5 h-16 bg-gradient-to-b from-purple-500/50 to-transparent"></div>
+          )}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+// Project Card Component
+function ProjectCard({ title, company, description, technologies, achievements }: {
+  title: string
+  company: string
+  description: string
+  technologies: string[]
+  achievements: string[]
+}) {
+  return (
+    <div className="relative group">
+      <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
+      <div className="relative p-6 bg-zinc-900/80 backdrop-blur-sm border border-zinc-700/50 rounded-lg h-full">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-xl font-bold text-white">{title}</h3>
+          <span className="text-sm text-purple-400 bg-purple-500/10 px-3 py-1 rounded-full">
+            {company}
+          </span>
+        </div>
+        <p className="text-zinc-400 mb-4">{description}</p>
+        
+        <div className="mb-4">
+          <h4 className="text-sm font-semibold text-white mb-2">Key Achievements:</h4>
+          <ul className="space-y-1">
+            {achievements.map((achievement, idx) => (
+              <li key={idx} className="flex items-start gap-2 text-sm text-zinc-400">
+                <ChevronRight size={12} className="text-purple-400 mt-1 flex-shrink-0" />
+                {achievement}
+              </li>
+            ))}
+          </ul>
+        </div>
+        
+        <div className="flex flex-wrap gap-2">
+          {technologies.map((tech, idx) => (
+            <span key={idx} className="px-2 py-1 bg-zinc-700/50 text-zinc-300 rounded text-xs">
+              {tech}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export default function Portfolio() {
+  const achievements = [
+    { value: '$6.2M+', label: 'Cost Savings Generated', icon: DollarSign },
+    { value: '300+', label: 'Professionals Trained', icon: Users },
+    { value: '32K+', label: 'Engineering Escalations Resolved', icon: Code },
+    { value: '20+', label: 'Years Multi-Domain Experience', icon: Award },
+    { value: '4', label: 'Global Regions Served', icon: Globe },
+    { value: '99.99%', label: 'Satellite Uptime Maintained', icon: Zap }
+  ]
+
+  const projects = [
+    {
+      title: 'Fisker Aftersales Service Tool (FAST)',
+      company: 'Fisker',
+      description: 'Revolutionary diagnostic platform that became the backbone of Fisker\'s service operations with comprehensive UI/UX design.',
+      technologies: ['CAN/CAN-FD', 'UDS', 'ISO Protocols', 'Diagnostic Systems', 'UI/UX Design'],
+      achievements: [
+        'Reduced ECU flashing time by 40% (60 to 35 minutes)',
+        'Increased diagnostic efficiency by 35%',
+        'Saved $2M in supplier costs',
+        'Trained 150+ engineers globally'
+      ]
+    },
+    {
+      title: 'Tesla Remote Diagnostics System',
+      company: 'Tesla',
+      description: 'Advanced remote diagnostic strategies for global service centers covering ADAS, HV/LV systems, and infotainment.',
+      technologies: ['SSH', 'DoIP', 'Syslog', 'HV Safety', 'Remote Diagnostics'],
+      achievements: [
+        'Resolved 32,000+ engineering escalations',
+        'Reduced field diagnostic time by 50%',
+        'Saved $3M in buyback investigations',
+        'Served 4 global regions'
+      ]
+    },
+    {
+      title: 'Rivian Cloud Diagnostics',
+      company: 'Rivian',
+      description: 'RivianOS cloud-based remote diagnostics and repair planning system for next-generation electric vehicles.',
+      technologies: ['Cloud Computing', 'Remote Diagnostics', 'Planning Systems', 'KPI Analytics'],
+      achievements: [
+        'Reduced remote response time by 60%',
+        'Saved $1.2M annually',
+        'Boosted software adoption by 45%',
+        'Increased resolution rate by 25%'
+      ]
+    }
+  ]
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-900 via-zinc-900 to-black text-white overflow-hidden">
-      <MouseFollower />
-      <ScrollProgress />
       <FloatingNav />
-
+      
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
@@ -28,257 +225,160 @@ export default function Portfolio() {
           <div className="absolute bottom-20 left-1/3 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
         </div>
 
-        <div className="container relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="container mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
             <div className="inline-block">
-              <div className="relative px-3 py-1 text-sm font-medium rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-4 mt-4">
-                <span className="relative z-10">Software Engineer & Creative Developer</span>
+              <div className="relative px-3 py-1 text-sm font-medium rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-4">
+                <span className="relative z-10">Multi-Domain Engineering Expert</span>
                 <span className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 animate-pulse"></span>
               </div>
             </div>
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
-              <span className="block">Hi, I'm</span>
+              <span className="block text-white">Hi, I'm</span>
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
-                Shine Kyaw Kyaw Aung
+                Ahmed Said
               </span>
             </h1>
             <p className="text-xl text-zinc-400 max-w-[600px]">
-              I craft exceptional digital experiences with code, creativity, and a passion for innovation.
+              Engineering leader with 20+ years across Tesla, Rivian, Fisker, Iridium & Verizon. 
+              Delivered $6.2M+ in cost savings and trained 300+ professionals globally.
             </p>
-            <div className="flex flex-wrap gap-4 pt-4">
-              <Button className="relative overflow-hidden group bg-gradient-to-r from-purple-500 to-pink-500 border-0">
-                <span className="relative z-10 flex items-center">
-                  View Projects <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </span>
-                <span className="absolute inset-0 bg-gradient-to-r from-pink-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity"></span>
-              </Button>
-              <Button
-                variant="outline"
-                className="border-zinc-700 text-pink-500 hover:text-pink-700 hover:border-zinc-500"
-              >
-                Contact Me
-              </Button>
+            <div className="flex gap-4">
+              <button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-pink-500 hover:to-purple-500 text-white px-8 py-3 rounded-full font-medium flex items-center gap-2 transition-all">
+                View Projects <ArrowRight size={20} />
+              </button>
+              <button className="border border-zinc-700 hover:border-purple-500 text-white px-8 py-3 rounded-full font-medium flex items-center gap-2 transition-all">
+                <Download size={20} /> Resume
+              </button>
             </div>
             <div className="flex gap-4 pt-4">
-              <Link href="https://github.com/shinekyaw" target="_blank" rel="noopener noreferrer">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-full bg-zinc-800/50 hover:bg-zinc-800 text-zinc-400 hover:text-white"
-                >
-                  <Github className="h-5 w-5" />
-                  <span className="sr-only">GitHub</span>
-                </Button>
-              </Link>
-              <Link href="https://www.linkedin.com/in/shinekyawkyawaung/" target="_blank" rel="noopener noreferrer">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-full bg-zinc-800/50 hover:bg-zinc-800 text-zinc-400 hover:text-white"
-                >
-                  <Linkedin className="h-5 w-5" />
-                  <span className="sr-only">LinkedIn</span>
-                </Button>
-              </Link>             
-              <Link href="mailto:shinekyawkyawaung@gmail.com">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-full bg-zinc-800/50 hover:bg-zinc-800 text-zinc-400 hover:text-white"
-                >
-                  <Mail className="h-5 w-5" />
-                  <span className="sr-only">Email</span>
-                </Button>
-              </Link>
+              <a href="mailto:ahmed.osaid.pro@gmail.com" className="text-zinc-400 hover:text-purple-400 transition-colors">
+                <Mail size={24} />
+              </a>
+              <a href="https://www.linkedin.com/in/ahmedosaid/" className="text-zinc-400 hover:text-purple-400 transition-colors">
+                <Linkedin size={24} />
+              </a>
+              <a href="tel:+16024022505" className="text-zinc-400 hover:text-purple-400 transition-colors">
+                <Phone size={24} />
+              </a>
             </div>
           </div>
-          <div className="flex justify-center">
-            <CreativeHero />
-          </div>
-        </div>
-
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 rounded-full border-2 border-white/20 flex justify-center items-start p-1">
-            <div className="w-1.5 h-1.5 rounded-full bg-white/60 animate-pulse"></div>
+          
+          <div className="relative">
+            <div className="w-full h-[400px] relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-3xl backdrop-blur-sm border border-white/10"></div>
+              <div className="absolute inset-4 bg-zinc-900/50 rounded-2xl flex items-center justify-center">
+                <div className="text-center">
+                  <div className="text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600 mb-4">
+                    20+
+                  </div>
+                  <div className="text-white font-medium">Years Experience</div>
+                  <div className="text-zinc-400 text-sm mt-2">Automotive • Satellite • Telecom</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* About Section */}
+      {/* Achievements Section */}
       <section id="about" className="py-32 relative">
         <div className="absolute inset-0 z-0">
-          <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
-          <div className="absolute bottom-1/3 left-1/3 w-64 h-64 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
+          <div className="absolute top-1/4 right-1/3 w-64 h-64 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
         </div>
+        
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-6xl font-bold text-white mb-4">
+              Impact by <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Numbers</span>
+            </h2>
+            <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
+              Two decades of engineering excellence across automotive, satellite, and telecommunications industries
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {achievements.map((achievement, index) => (
+              <AchievementCard key={index} {...achievement} />
+            ))}
+          </div>
+        </div>
+      </section>
 
-        <div className="container relative z-10">
-          <SectionHeading title="About Me" subtitle="My background and journey" />
+      {/* Experience Timeline */}
+      <section id="experience" className="py-32 relative">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute bottom-1/4 left-1/4 w-64 h-64 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
+        </div>
+        
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-6xl font-bold text-white mb-4">
+              Career <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Journey</span>
+            </h2>
+            <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
+              From telecommunications infrastructure to cutting-edge electric vehicles
+            </p>
+          </div>
+          
+          <CompanyTimeline />
+        </div>
+      </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mt-16">
-            <div className="relative">
-              <div className="absolute -inset-4 rounded-xl bg-gradient-to-r from-purple-500/20 to-pink-500/20 blur-xl opacity-70"></div>
-              <div className="relative aspect-square rounded-xl overflow-hidden border border-zinc-800">
-                <img
-                  src="/placeholder.svg?height=600&width=600"
-                  alt="Shine Kyaw Kyaw Aung"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-                <div className="absolute bottom-0 left-0 w-full p-6">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
-                    <span className="text-sm font-medium">Available for work</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-6">
-              <GlassmorphicCard>
-                <p className="text-lg text-zinc-300">
-                  I'm a passionate software engineer with experience building web applications and digital products. I
-                  specialize in frontend development with React and Next.js, but I'm also comfortable working with
-                  backend technologies.
-                </p>
-                <p className="text-lg text-zinc-300 mt-4">
-                  My journey in tech started with a strong foundation in software development. I've worked with various
-                  companies to create intuitive, performant, and accessible digital experiences.
-                </p>
-                <p className="text-lg text-zinc-300 mt-4">
-                  When I'm not coding, you can find me exploring new technologies, contributing to open-source projects,
-                  and staying up-to-date with the latest industry trends.
-                </p>
-
-                <div className="grid grid-cols-2 gap-4 mt-8">
-                  <div className="space-y-1">
-                    <div className="text-sm text-zinc-500">Name</div>
-                    <div className="font-medium">Shine Kyaw Kyaw Aung</div>
-                  </div>
-                  <div className="space-y-1">
-                    <div className="text-sm text-zinc-500">Email</div>
-                    <div className="font-medium">shinekyawkyawaung@gmail.com</div>
-                  </div>
-                  <div className="space-y-1">
-                    <div className="text-sm text-zinc-500">Location</div>
-                    <div className="font-medium">Myanmar</div>
-                  </div>
-                  <div className="space-y-1">
-                    <div className="text-sm text-zinc-500">Availability</div>
-                    <div className="font-medium text-green-500">Open to opportunities</div>
-                  </div>
-                </div>
-
-                <div className="mt-8">
-                  <Button className="bg-zinc-800 hover:bg-zinc-700 text-white">Download Resume</Button>
-                </div>
-              </GlassmorphicCard>
-            </div>
+      {/* Featured Projects */}
+      <section id="projects" className="py-32 relative">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute top-1/3 left-1/3 w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
+        </div>
+        
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-6xl font-bold text-white mb-4">
+              Featured <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Projects</span>
+            </h2>
+            <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
+              Breakthrough engineering solutions that transformed operations
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+            {projects.map((project, index) => (
+              <ProjectCard key={index} {...project} />
+            ))}
           </div>
         </div>
       </section>
 
       {/* Skills Section */}
       <section id="skills" className="py-32 relative">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute top-1/3 left-1/4 w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
-        </div>
-
-        <div className="container relative z-10">
-          <SectionHeading title="My Skills" subtitle="Technologies I work with" />
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-16">
-            <SkillBadge name="JavaScript" level={90} />
-            <SkillBadge name="TypeScript" level={85} />
-            <SkillBadge name="React" level={95} />
-            <SkillBadge name="Next.js" level={90} />
-            <SkillBadge name="Node.js" level={80} />
-            <SkillBadge name="HTML/CSS" level={95} />
-            <SkillBadge name="Tailwind CSS" level={90} />
-            <SkillBadge name="GraphQL" level={75} />
-            <SkillBadge name="PostgreSQL" level={70} />
-            <SkillBadge name="AWS" level={65} />
-            <SkillBadge name="Docker" level={60} />
-            <SkillBadge name="Git" level={85} />
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-6xl font-bold text-white mb-4">
+              Technical <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Expertise</span>
+            </h2>
           </div>
-        </div>
-      </section>
-
-      {/* Projects Section */}
-      <section id="projects" className="py-32 relative">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute top-1/4 left-1/3 w-64 h-64 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
-          <div className="absolute bottom-1/3 right-1/4 w-64 h-64 bg-yellow-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
-        </div>
-
-        <div className="container relative z-10">
-          <SectionHeading title="Featured Projects" subtitle="Some of my recent work" />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16">
-            <ProjectCard
-              title="E-commerce Platform"
-              description="A full-stack e-commerce platform built with Next.js, Stripe, and Prisma."
-              tags={["Next.js", "TypeScript", "Prisma", "Stripe"]}
-              image="/placeholder.svg?height=400&width=600"
-              demoUrl="https://example.com"
-              repoUrl="https://github.com"
-            />
-            <ProjectCard
-              title="Task Management App"
-              description="A collaborative task management application with real-time updates."
-              tags={["React", "Firebase", "Tailwind CSS", "Redux"]}
-              image="/placeholder.svg?height=400&width=600"
-              demoUrl="https://example.com"
-              repoUrl="https://github.com"
-            />
-            <ProjectCard
-              title="AI Content Generator"
-              description="An AI-powered content generation tool using OpenAI's GPT models."
-              tags={["Next.js", "OpenAI API", "Node.js", "MongoDB"]}
-              image="/placeholder.svg?height=400&width=600"
-              demoUrl="https://example.com"
-              repoUrl="https://github.com"
-            />
-            <ProjectCard
-              title="Fitness Tracker"
-              description="A mobile-first fitness tracking application with data visualization."
-              tags={["React Native", "TypeScript", "D3.js", "Firebase"]}
-              image="/placeholder.svg?height=400&width=600"
-              demoUrl="https://example.com"
-              repoUrl="https://github.com"
-            />
-            <ProjectCard
-              title="Weather Dashboard"
-              description="A beautiful weather dashboard with forecasts and historical data."
-              tags={["React", "Weather API", "Chart.js", "Styled Components"]}
-              image="/placeholder.svg?height=400&width=600"
-              demoUrl="https://example.com"
-              repoUrl="https://github.com"
-            />
-            <ProjectCard
-              title="Portfolio Website"
-              description="This portfolio website built with Next.js and Tailwind CSS."
-              tags={["Next.js", "Tailwind CSS", "Framer Motion", "TypeScript"]}
-              image="/placeholder.svg?height=400&width=600"
-              demoUrl="https://example.com"
-              repoUrl="https://github.com"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Experience Section */}
-      <section id="experience" className="py-32 relative">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute top-1/3 right-1/3 w-64 h-64 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
-          <div className="absolute bottom-1/4 left-1/4 w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
-        </div>
-
-        <div className="container relative z-10">
-          <SectionHeading title="Work Experience" subtitle="My professional journey" />
-
-          <div className="mt-16">
-            <Timeline />
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { category: 'Diagnostic Systems', skills: ['CAN/CAN-FD', 'UDS', 'ISO Protocols', 'DoIP', 'Remote Diagnostics'] },
+              { category: 'Automotive Tech', skills: ['ADAS', 'ECU Systems', 'HV/LV Systems', 'Vehicle Networks', 'OTA Management'] },
+              { category: 'Tools & Platforms', skills: ['CANoe Suite', 'Vehicle Spy', 'GNU/Linux', 'JIRA', 'Cloud Systems'] },
+              { category: 'Leadership', skills: ['Product Management', 'Global Teams', 'Process Optimization', 'Training', 'Strategy'] }
+            ].map((skillGroup, index) => (
+              <div key={index} className="relative group">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
+                <div className="relative p-6 bg-zinc-900/80 backdrop-blur-sm border border-zinc-700/50 rounded-lg">
+                  <h3 className="text-lg font-bold text-white mb-4">{skillGroup.category}</h3>
+                  <div className="space-y-2">
+                    {skillGroup.skills.map((skill, idx) => (
+                      <span key={idx} className="inline-block px-3 py-1 bg-zinc-700/50 text-zinc-300 rounded-full text-sm mr-2 mb-2">
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -290,99 +390,78 @@ export default function Portfolio() {
           <div className="absolute bottom-1/3 right-1/3 w-64 h-64 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
         </div>
 
-        <div className="container relative z-10">
-          <SectionHeading title="Get In Touch" subtitle="Let's work together" />
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-6xl font-bold text-white mb-4">
+              Let's <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Connect</span>
+            </h2>
+            <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
+              Ready to transform your operations with 20+ years of multi-domain expertise?
+            </p>
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mt-16">
-            <GlassmorphicCard>
-              <h3 className="text-2xl font-bold mb-6">Contact Information</h3>
-              <div className="space-y-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center">
-                    <Mail className="h-5 w-5 text-purple-400" />
-                  </div>
-                  <div>
-                    <div className="text-sm text-zinc-500">Email</div>
-                    <div className="font-medium">shinekyawkyawaung@gmail.com</div>
-                  </div>
+          <div className="max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Mail className="w-8 h-8 text-white" />
                 </div>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center">
-                    <Linkedin className="h-5 w-5 text-purple-400" />
-                  </div>
-                  <div>
-                    <div className="text-sm text-zinc-500">LinkedIn</div>
-                    <div className="font-medium">linkedin.com/in/shinekyawkyawaung</div>
-                  </div>
+                <h3 className="text-lg font-bold text-white mb-2">Email</h3>
+                <a href="mailto:ahmed.osaid.pro@gmail.com" className="text-purple-400 hover:text-pink-400 transition-colors">
+                  ahmed.osaid.pro@gmail.com
+                </a>
+              </div>
+              
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Phone className="w-8 h-8 text-white" />
                 </div>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center">
-                    <Github className="h-5 w-5 text-purple-400" />
-                  </div>
-                  <div>
-                    <div className="text-sm text-zinc-500">GitHub</div>
-                    <div className="font-medium">github.com/shinekyaw</div>
-                  </div>
+                <h3 className="text-lg font-bold text-white mb-2">Phone</h3>
+                <a href="tel:+16024022505" className="text-purple-400 hover:text-pink-400 transition-colors">
+                  +1 (602) 402-2505
+                </a>
+              </div>
+              
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Linkedin className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">LinkedIn</h3>
+                <a href="https://www.linkedin.com/in/ahmedosaid/" className="text-purple-400 hover:text-pink-400 transition-colors">
+                  Connect with me
+                </a>
+              </div>
+            </div>
+            
+            <div className="text-center">
+              <div className="relative group inline-block">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
+                <div className="relative bg-zinc-900/80 backdrop-blur-sm border border-zinc-700/50 rounded-lg p-8">
+                  <h3 className="text-2xl font-bold text-white mb-4">Evaluate Consulting</h3>
+                  <p className="text-zinc-400 mb-6">
+                    Providing bespoke engineering support for 3rd party service networks, 
+                    collision centers, and out-of-warranty end users globally.
+                  </p>
+                  <button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-pink-500 hover:to-purple-500 text-white px-8 py-3 rounded-full font-medium flex items-center gap-2 mx-auto transition-all">
+                    Get Consultation <ExternalLink size={20} />
+                  </button>
                 </div>
               </div>
-
-              <div className="mt-8 pt-8 border-t border-zinc-800">
-                <h4 className="text-lg font-medium mb-4">Current Status</h4>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
-                  <span>Available for freelance work and full-time opportunities</span>
-                </div>
-              </div>
-            </GlassmorphicCard>
-
-            <ContactForm />
+            </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-zinc-800 py-12">
-        <div className="container flex flex-col md:flex-row justify-between items-center gap-6">
-          <div>
-            <Link href="/" className="font-bold text-xl">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Shine</span>
-              <span className="text-white">KKA</span>
-            </Link>
-            <p className="text-sm text-zinc-500 mt-2">
-              © {new Date().getFullYear()} Shine Kyaw Kyaw Aung. All rights reserved.
+      <footer className="bg-zinc-900/50 backdrop-blur-sm border-t border-zinc-700/50 py-12">
+        <div className="container mx-auto px-6">
+          <div className="text-center">
+            <p className="text-zinc-400 mb-4">
+              © 2024 Ahmed Said. Engineering excellence across industries.
             </p>
-          </div>
-          <div className="flex gap-4">
-            <Link href="https://github.com/shinekyaw" target="_blank" rel="noopener noreferrer">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full bg-zinc-800/50 hover:bg-zinc-800 text-zinc-400 hover:text-white"
-              >
-                <Github className="h-5 w-5" />
-                <span className="sr-only">GitHub</span>
-              </Button>
-            </Link>
-            <Link href="https://www.linkedin.com/in/shinekyawkyawaung/" target="_blank" rel="noopener noreferrer">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full bg-zinc-800/50 hover:bg-zinc-800 text-zinc-400 hover:text-white"
-              >
-                <Linkedin className="h-5 w-5" />
-                <span className="sr-only">LinkedIn</span>
-              </Button>
-            </Link>
-            <Link href="mailto:shinekyawkyawaung@gmail.com">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full bg-zinc-800/50 hover:bg-zinc-800 text-zinc-400 hover:text-white"
-              >
-                <Mail className="h-5 w-5" />
-                <span className="sr-only">Email</span>
-              </Button>
-            </Link>
+            <p className="text-sm text-zinc-500">
+              Tesla • Rivian • Fisker • Iridium • Verizon • Evaluate Consulting
+            </p>
           </div>
         </div>
       </footer>
