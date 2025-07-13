@@ -128,7 +128,10 @@ function VerticalTimeline() {
               )}>
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
                 <div className="relative p-6 bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-lg">
-                  <div className={cn("flex items-center justify-between mb-3", index % 2 !== 0 && "flex-row-reverse")}>
+                  <div className={cn(
+                    "flex items-center justify-between mb-3", 
+                    index % 2 !== 0 ? "flex-row-reverse" : ""
+                  )}>
                     <h3 className="text-xl font-bold text-white">{company.name}</h3>
                     <span className="text-xs text-zinc-400 bg-zinc-700/50 px-2 py-1 rounded-full">
                       {company.period}
@@ -141,7 +144,7 @@ function VerticalTimeline() {
                     {company.achievements.slice(0, 2).map((achievement, idx) => (
                       <div key={idx} className={cn(
                         "flex items-start gap-2 text-sm text-zinc-300",
-                        index % 2 !== 0 && "flex-row-reverse text-right"
+                        index % 2 !== 0 ? "flex-row-reverse text-right" : ""
                       )}>
                         <ChevronRight size={12} className="text-purple-400 mt-1 flex-shrink-0" />
                         {achievement}
