@@ -7,7 +7,7 @@ import {
   Settings, Briefcase, GraduationCap, Building, Menu, X,
   ExternalLink, Download, Calculator, BookOpen, Play, Pause,
   Clock, TrendingUp, BarChart3, CheckCircle, AlertTriangle,
-  Brain, Cpu, Network, Shield, Database, Cloud, Wrench
+  Brain, Cpu, Network, Shield, Database, Cloud, Wrench, RotateCcw
 } from 'lucide-react'
 
 // Utility function
@@ -15,7 +15,7 @@ function cn(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-// Timeline Component for Work Experience
+// Timeline Component for Work Experience (Fixed - Center Line)
 function VerticalTimeline() {
   const companies = [
     { 
@@ -104,42 +104,50 @@ function VerticalTimeline() {
   ]
 
   return (
-    <div className="relative">
+    <div className="relative max-w-4xl mx-auto">
       {/* Central timeline line */}
-      <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-purple-500 via-blue-500 to-green-500"></div>
+      <div className="absolute left-1/2 transform -translate-x-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-purple-500 via-blue-500 to-green-500"></div>
       
       <div className="space-y-12">
         {companies.map((company, index) => (
-          <div key={index} className={cn("relative flex", index % 2 === 0 ? "justify-start" : "justify-end")}>
-            {/* Timeline node */}
+          <div key={index} className="relative">
+            {/* Timeline node - centered */}
             <div className={cn(
-              "absolute left-6 w-4 h-4 rounded-full border-4 border-zinc-900 z-10",
+              "absolute left-1/2 transform -translate-x-1/2 w-4 h-4 rounded-full border-4 border-zinc-900 z-10",
               company.color
             )}></div>
             
-            {/* Content card */}
+            {/* Content card - alternating sides */}
             <div className={cn(
-              "relative group max-w-md",
-              index % 2 === 0 ? "ml-16" : "mr-16"
+              "relative flex w-full",
+              index % 2 === 0 ? "justify-start pr-1/2 pr-8" : "justify-end pl-1/2 pl-8"
             )}>
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
-              <div className="relative p-6 bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-lg">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-xl font-bold text-white">{company.name}</h3>
-                  <span className="text-xs text-zinc-400 bg-zinc-700/50 px-2 py-1 rounded-full">
-                    {company.period}
-                  </span>
-                </div>
-                <p className="text-purple-400 font-medium mb-1">{company.role}</p>
-                <p className="text-zinc-400 text-sm mb-3">{company.industry} • {company.location}</p>
-                
-                <div className="space-y-1">
-                  {company.achievements.slice(0, 2).map((achievement, idx) => (
-                    <div key={idx} className="flex items-start gap-2 text-sm text-zinc-300">
-                      <ChevronRight size={12} className="text-purple-400 mt-1 flex-shrink-0" />
-                      {achievement}
-                    </div>
-                  ))}
+              <div className={cn(
+                "relative group max-w-md w-full",
+                index % 2 === 0 ? "" : "text-right"
+              )}>
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
+                <div className="relative p-6 bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-lg">
+                  <div className={cn("flex items-center justify-between mb-3", index % 2 !== 0 && "flex-row-reverse")}>
+                    <h3 className="text-xl font-bold text-white">{company.name}</h3>
+                    <span className="text-xs text-zinc-400 bg-zinc-700/50 px-2 py-1 rounded-full">
+                      {company.period}
+                    </span>
+                  </div>
+                  <p className="text-purple-400 font-medium mb-1">{company.role}</p>
+                  <p className="text-zinc-400 text-sm mb-3">{company.industry} • {company.location}</p>
+                  
+                  <div className="space-y-1">
+                    {company.achievements.slice(0, 2).map((achievement, idx) => (
+                      <div key={idx} className={cn(
+                        "flex items-start gap-2 text-sm text-zinc-300",
+                        index % 2 !== 0 && "flex-row-reverse text-right"
+                      )}>
+                        <ChevronRight size={12} className="text-purple-400 mt-1 flex-shrink-0" />
+                        {achievement}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -159,9 +167,9 @@ function SkillsGrid() {
     { name: 'Diagnostics', level: 96 },
     { name: 'Remote Debug', level: 90 },
     
-    { name: 'Tesla Systems', level: 94 },
-    { name: 'Rivian Cloud', level: 86 },
-    { name: 'Fisker FAST', level: 93 },
+    { name: 'DoIP', level: 94 },
+    { name: 'Python', level: 86 },
+    { name: 'SSH', level: 93 },
     { name: 'ADAS', level: 85 },
     { name: 'HV/LV Systems', level: 89 },
     
@@ -169,7 +177,7 @@ function SkillsGrid() {
     { name: 'Team Building', level: 94 },
     { name: 'Training', level: 96 },
     { name: 'Strategy', level: 91 },
-    { name: 'Process Opt.', level: 93 }
+    { name: 'React.js', level: 93 }
   ]
 
   return (
@@ -513,7 +521,7 @@ function FloatingNav() {
 
   const handleDownload = () => {
     const link = document.createElement('a')
-    link.href = '/Ahmed_Said_Resume.pdf'
+    link.href = '/ASCV25.pdf'  // Use the actual resume file
     link.download = 'Ahmed_Said_Resume.pdf'
     link.click()
   }
@@ -552,7 +560,7 @@ function FloatingNav() {
 }
 
 // Project Card Component with Enhanced Details
-function ProjectCard({ title, company, period, description, achievements, technologies, challenges, solutions, impact }: {
+function ProjectCard({ title, company, period, description, achievements, technologies, challenges, solutions, impact, serviceRequirements, kpiFramework }: {
   title: string
   company: string
   period: string
@@ -562,6 +570,8 @@ function ProjectCard({ title, company, period, description, achievements, techno
   challenges: string[]
   solutions: string[]
   impact: string
+  serviceRequirements?: any
+  kpiFramework?: any
 }) {
   const [expanded, setExpanded] = useState(false)
 
@@ -595,6 +605,53 @@ function ProjectCard({ title, company, period, description, achievements, techno
 
         {expanded && (
           <>
+            {/* Special rendering for Humanoid Robotics project */}
+            {title.includes('Humanoid Robotics') && serviceRequirements && (
+              <div className="mb-4">
+                <h4 className="text-sm font-semibold text-white mb-2">Service Requirements Evolution:</h4>
+                <div className="space-y-3">
+                  {Object.values(serviceRequirements).map((year: any, index) => (
+                    <div key={index} className="border border-zinc-600 p-3 rounded-lg">
+                      <h5 className="font-semibold text-white text-xs mb-1">{year.title}</h5>
+                      <p className="text-zinc-400 text-xs mb-2">{year.description}</p>
+                      <ul className="space-y-1">
+                        {year.details.slice(0, 2).map((detail: string, idx: number) => (
+                          <li key={idx} className="flex items-start gap-2 text-xs text-zinc-400">
+                            <ChevronRight size={10} className="text-blue-400 mt-1 flex-shrink-0" />
+                            {detail}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* KPI Framework for Humanoid Robotics */}
+            {title.includes('Humanoid Robotics') && kpiFramework && (
+              <div className="mb-4">
+                <h4 className="text-sm font-semibold text-white mb-2">KPI Framework:</h4>
+                <div className="grid grid-cols-2 gap-2">
+                  {Object.entries(kpiFramework).map(([category, kpis]: [string, any]) => (
+                    <div key={category} className="border border-zinc-600 p-2 rounded-lg">
+                      <h5 className="font-semibold text-blue-400 text-xs mb-1 capitalize">
+                        {category.replace(/([A-Z])/g, ' $1').trim()}
+                      </h5>
+                      <ul className="space-y-1">
+                        {kpis.slice(0, 2).map((kpi: string, idx: number) => (
+                          <li key={idx} className="flex items-start gap-1 text-xs text-zinc-400">
+                            <Target size={8} className="text-purple-400 mt-1 flex-shrink-0" />
+                            {kpi}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="mb-4">
               <h4 className="text-sm font-semibold text-white mb-2">Challenges & Solutions:</h4>
               <div className="grid grid-cols-1 gap-3">
@@ -760,6 +817,72 @@ export default function Portfolio() {
         'Designed regional OTA rollout strategy with compliance',
         'Implemented Flying Doctors/Service Partner Networks'
       ],
+      
+      // Service Requirements Evolution (from app.js)
+      serviceRequirements: {
+        year1: {
+          title: 'Year 1: Foundation & Hardware Focus',
+          description: 'Tier 3 (Field Service Engineers) for hardware failures requiring physical intervention',
+          details: [
+            'Establish diagnostics stations with mechanical, electrical, and software tools',
+            'Create lab checklists for daily, weekly, monthly maintenance',
+            'Deploy CRM workflow management system with incident reporting',
+            'Knowledge base framework with troubleshooting procedures',
+            'Regional OTA rollout strategy development'
+          ]
+        },
+        year2: {
+          title: 'Year 2: Advanced Remote Capabilities',
+          description: 'Tier 2 (Advanced Technicians) trained for remote diagnostics and complex issue resolution',
+          details: [
+            'Humanoid robots execute onboard customer training programs',
+            'Self-Service Portal for customers to log requests and track status',
+            'Threshold alerts trigger automated diagnostics reporting',
+            'Integration of lab-setting remote diagnostics into production systems',
+            'Predictive analytics for proactive service intervention'
+          ]
+        },
+        year3: {
+          title: 'Year 3: Autonomous Service Operations',
+          description: 'Tier 1 (Basic Support) with self-service portals and automated resolution',
+          details: [
+            'ML models deployed for self-diagnosis and resolution of non-HW defects',
+            'Humanoid robots conduct automated CSAT and NPS surveys',
+            'Real-time CRM integration with Robot Identification Number (RIN) tracking',
+            'Hardware engineering refinement using 3 years of predictive failure data',
+            'Flying Doctors deployment for global service coverage'
+          ]
+        }
+      },
+      
+      // Comprehensive KPI Framework (from app.js)
+      kpiFramework: {
+        reliability: [
+          'Mean Time Between Failures (MTBF)',
+          'Mean Time to Repair (MTTR)',
+          'Predictive Failure & Maintenance Accuracy Rates',
+          'Average Fleet Uptime (Target: 99.5%+)'
+        ],
+        scalability: [
+          'Fleet Health Grading',
+          'Service Request Rate',
+          'Remote Diagnostics Response Time',
+          'Service & Repair Response Time'
+        ],
+        customerExperience: [
+          'Customer Satisfaction (CSAT)',
+          'Net Promoter Score (NPS)',
+          'First Repair Resolution Rate',
+          'Support Ticket Resolution Rate'
+        ],
+        financial: [
+          'Service Cost per Unit',
+          'Warranty Claim per Unit Sold',
+          'Cost of Ownership per Unit',
+          'ROI on Predictive Maintenance Investment'
+        ]
+      },
+
       technologies: ['ML/AI Algorithms', 'IoT Sensors', 'Cloud Platforms (AWS)', 'CRM Systems', 'JIRA Integration', 'OTA Management', 'Python SSH'],
       challenges: [
         'Defining service requirements for emerging humanoid robotics',
@@ -822,7 +945,7 @@ export default function Portfolio() {
               <button 
                 onClick={() => {
                   const link = document.createElement('a')
-                  link.href = '/Ahmed_Said_Resume.pdf'
+                  link.href = '/ASCV25.pdf'  // Use the actual resume file
                   link.download = 'Ahmed_Said_Resume.pdf'
                   link.click()
                 }}
@@ -1119,7 +1242,7 @@ export default function Portfolio() {
         <div className="container mx-auto px-6">
           <div className="text-center">
             <p className="text-zinc-400 mb-4">
-              © 2024 Ahmed Said. Engineering excellence across industries.
+              © 2025 Ahmed Said. Engineering excellence across industries.
             </p>
             <p className="text-sm text-zinc-500">
               Tesla • Rivian • Fisker • Iridium • Verizon • Evaluate Consulting
