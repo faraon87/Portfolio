@@ -8,7 +8,7 @@ import {
   ExternalLink, Download, Calculator, BookOpen, Play, Pause,
   Clock, TrendingUp, BarChart3, CheckCircle, AlertTriangle,
   Brain, Cpu, Network, Shield, Database, Cloud, Wrench, RotateCcw,
-  Battery, Thermometer, Gauge, RefreshCw, Eye, Maximize2
+  Battery, Thermometer, Gauge, RefreshCw, Eye, Maximize2, Send
 } from 'lucide-react'
 
 // Utility function with proper TypeScript
@@ -1149,9 +1149,133 @@ function FloatingNav() {
   )
 }
 
-export default function Portfolio() {
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+// Contact Form Component
+function ContactForm({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showToast, setShowToast] = useState(false)
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  })
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+
+    // Simulate form submission - in production, this would send to your email
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+
+    // Show success message
+    setShowToast(true)
+    setTimeout(() => setShowToast(false), 3000)
+
+    setIsSubmitting(false)
+    setFormData({ name: '', email: '', subject: '', message: '' })
+  }
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({ ...prev, [name]: value }))
+  }
+
+  if (!isOpen) return null
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose}></div>
+      <div className="relative bg-zinc-900 border border-zinc-700/50 rounded-2xl w-full max-w-md overflow-hidden">
+        {/* Toast Notification */}
+        {showToast && (
+          <div className="absolute top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-medium z-10 animate-pulse">
+            Message sent! I'll get back to you soon.
+          </div>
+        )}
+
+        <div className="relative overflow-hidden">
+          <div className="absolute -inset-1 bg-gradient-to-r from-purple-500/10 to-pink-500/10 blur opacity-25"></div>
+          
+          <div className="relative p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-2xl font-bold text-white">Send Me a Message</h3>
+              <button 
+                onClick={onClose}
+                className="p-2 hover:bg-zinc-800 rounded-lg transition-colors"
+              >
+                <X className="text-zinc-400 hover:text-white" size={20} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Your Name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-3 py-2 bg-zinc-900/50 border border-zinc-700 rounded-md text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+                />
+              </div>
+              
+              <div>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Your Email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-3 py-2 bg-zinc-900/50 border border-zinc-700 rounded-md text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+                />
+              </div>
+              
+              <div>
+                <input
+                  type="text"
+                  name="subject"
+                  placeholder="Subject"
+                  value={formData.subject}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-3 py-2 bg-zinc-900/50 border border-zinc-700 rounded-md text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+                />
+              </div>
+              
+              <div>
+                <textarea
+                  name="message"
+                  placeholder="Your Message"
+                  rows={5}
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-3 py-2 bg-zinc-900/50 border border-zinc-700 rounded-md text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors resize-none"
+                />
+              </div>
+              
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-pink-500 hover:to-purple-500 text-white px-6 py-3 rounded-lg font-medium flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? (
+                  <>Sending...</>
+                ) : (
+                  <>
+                    Send Message <Send size={16} />
+                  </>
+                )}
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
 
   const achievements: Achievement[] = [
     { value: '$6.2M+', label: 'Cost Savings Generated', icon: DollarSign },
@@ -1710,7 +1834,10 @@ export default function Portfolio() {
                     collision centers, and out-of-warranty end users globally. Leveraging 20+ years 
                     of multi-domain expertise to solve complex technical challenges.
                   </p>
-                  <button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-pink-500 hover:to-purple-500 text-white px-8 py-3 rounded-full font-medium flex items-center gap-2 mx-auto transition-all">
+                  <button 
+                    onClick={() => setIsContactFormOpen(true)}
+                    className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-pink-500 hover:to-purple-500 text-white px-8 py-3 rounded-full font-medium flex items-center gap-2 mx-auto transition-all"
+                  >
                     Get Consultation <ExternalLink size={20} />
                   </button>
                 </div>
