@@ -1523,14 +1523,13 @@ export default function Portfolio() {
           </div>
 
           <div className="max-w-4xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            <div className="flex justify-center items-center gap-12 mb-12">
               <div className="text-center">
                 <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Mail className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">Email</h3>
                 <a href="mailto:ahmed.osaid.pro@gmail.com" className="text-purple-400 hover:text-pink-400 transition-colors">
-                  ahmed.osaid.pro@gmail.com
+                  E-Mail
                 </a>
               </div>
               
@@ -1538,9 +1537,8 @@ export default function Portfolio() {
                 <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Phone className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">Phone</h3>
                 <a href="tel:+16024022505" className="text-purple-400 hover:text-pink-400 transition-colors">
-                  +1 (602) 402-2505
+                  Call Me
                 </a>
               </div>
               
@@ -1548,7 +1546,6 @@ export default function Portfolio() {
                 <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Linkedin className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">LinkedIn</h3>
                 <a href="https://www.linkedin.com/in/ahmedosaid/" className="text-purple-400 hover:text-pink-400 transition-colors">
                   Connect with me
                 </a>
