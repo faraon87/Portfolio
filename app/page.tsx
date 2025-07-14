@@ -1369,7 +1369,7 @@ export default function Portfolio() {
         'Performance tracking and continuous improvement processes'
       ],
       impact: 'Transformed Bentley APAC product support operations with comprehensive management procedures, enhancing quality assurance and operational efficiency for luxury automotive market'
-
+    }
   ]
 
   const openProjectModal = (project: Project) => {
