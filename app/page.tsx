@@ -1063,24 +1063,43 @@ function TrainingProgram() {
 // Floating Navigation Component
 function FloatingNav() {
   const [isVisible, setIsVisible] = useState<boolean>(false)
+  const [activeSection, setActiveSection] = useState<string>('')
+
+  const navItems: Array<{name: string, href: string, id: string}> = [
+    { name: "About", href: "#about", id: "about" },
+    { name: "Experience", href: "#experience", id: "experience" }, 
+    { name: "Projects", href: "#projects", id: "projects" },
+    { name: "Skills", href: "#skills", id: "skills" },
+    { name: "ROI", href: "#roi-calculator", id: "roi-calculator" },
+    { name: "Training", href: "#training", id: "training" },
+    { name: "Contact", href: "#contact", id: "contact" },
+  ]
 
   useEffect(() => {
     const handleScroll = () => {
       setIsVisible(window.scrollY > 100)
+
+      // Check which section is currently in view
+      const sections = navItems.map(item => item.id)
+      let currentSection = ''
+
+      for (const sectionId of sections) {
+        const element = document.getElementById(sectionId)
+        if (element) {
+          const rect = element.getBoundingClientRect()
+          if (rect.top <= 100 && rect.bottom >= 100) {
+            currentSection = sectionId
+            break
+          }
+        }
+      }
+
+      setActiveSection(currentSection)
     }
+
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
-
-  const navItems: Array<{name: string, href: string}> = [
-    { name: "About", href: "#about" },
-    { name: "Experience", href: "#experience" }, 
-    { name: "Projects", href: "#projects" },
-    { name: "Skills", href: "#skills" },
-    { name: "ROI", href: "#roi-calculator" },
-    { name: "Training", href: "#training" },
-    { name: "Contact", href: "#contact" },
-  ]
 
   const handleDownload = () => {
     const link = document.createElement('a')
@@ -1097,10 +1116,10 @@ function FloatingNav() {
       "fixed top-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-300",
       isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
     )}>
-      <div className="relative px-4 py-3 rounded-full bg-zinc-800/80 backdrop-blur-md border border-zinc-700/50 shadow-lg">
+      <div className="relative px-4 py-3 rounded-full bg-zinc-800/80 backdrop-blur-md border border-zinc-700/50 shadow-lg max-w-[90vw] overflow-hidden">
         <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full blur opacity-50"></div>
-        <div className="relative flex items-center gap-1">
-          <span className="font-bold text-lg mr-4">
+        <div className="relative flex items-center gap-1 overflow-x-auto scrollbar-hide">
+          <span className="font-bold text-lg mr-4 flex-shrink-0">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Ahmed</span>
             <span className="text-white ml-1">Said</span>
           </span>
@@ -1108,14 +1127,19 @@ function FloatingNav() {
             <a
               key={item.name}
               href={item.href}
-              className="px-3 py-1 text-sm font-medium text-zinc-400 hover:text-white transition-colors"
+              className={cn(
+                "px-3 py-1 text-sm font-medium transition-all duration-300 rounded-full flex-shrink-0",
+                activeSection === item.id 
+                  ? "text-white bg-purple-500/20 border border-purple-500/30" 
+                  : "text-zinc-400 hover:text-white hover:bg-zinc-700/30"
+              )}
             >
               {item.name}
             </a>
           ))}
           <button 
             onClick={handleDownload}
-            className="ml-2 px-4 py-1 text-sm bg-gradient-to-r from-purple-500 to-pink-500 hover:from-pink-500 hover:to-purple-500 border-0 rounded-full text-white font-medium transition-all"
+            className="ml-2 px-4 py-1 text-sm bg-zinc-700 hover:bg-zinc-600 border border-zinc-600 hover:border-zinc-500 rounded-full text-white font-medium transition-all flex-shrink-0"
           >
             Resume
           </button>
