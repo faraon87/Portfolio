@@ -724,7 +724,7 @@ function SkillsGrid() {
     { name: 'CAN/CAN-FD', level: 95 },
     { name: 'UDS Protocols', level: 92 },
     { name: 'ISO 13400', level: 88 },
-    { name: 'Diagnostics', level: 96 },
+    { name: 'TT&C', level: 96 },
     { name: 'Remote Debug', level: 90 },
     
     { name: 'DoIP', level: 94 },
@@ -734,9 +734,9 @@ function SkillsGrid() {
     { name: 'HV/LV Systems', level: 89 },
     
     { name: 'Leadership', level: 97 },
-    { name: 'Team Building', level: 94 },
+    { name: 'AutoCAD/CATIA', level: 94 },
     { name: 'Training', level: 96 },
-    { name: 'Strategy', level: 91 },
+    { name: 'Repair Planning', level: 91 },
     { name: 'React.js', level: 93 }
   ]
 
