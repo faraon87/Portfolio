@@ -1671,7 +1671,7 @@ export default function Portfolio() {
           </div>
 
           <div className="max-w-4xl mx-auto">
-            <div className="flex justify-center items-center gap-12 mb-12">
+            <div className="flex justify-center items-center gap-12">
               <div className="text-center">
                 <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Mail className="w-8 h-8 text-white" />
@@ -1697,23 +1697,6 @@ export default function Portfolio() {
                 <a href="https://www.linkedin.com/in/ahmedosaid/" className="text-purple-400 hover:text-pink-400 transition-colors">
                   Connect with me
                 </a>
-              </div>
-            </div>
-            
-            <div className="text-center">
-              <div className="relative group inline-block">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
-                <div className="relative bg-zinc-900/80 backdrop-blur-sm border border-zinc-700/50 rounded-lg p-8">
-                  <h3 className="text-2xl font-bold text-white mb-4">Evaluate Consulting</h3>
-                  <p className="text-zinc-400 mb-6 max-w-2xl">
-                    Providing bespoke engineering support for 3rd party service networks, 
-                    collision centers, and out-of-warranty end users globally. Leveraging 20+ years 
-                    of multi-domain expertise to solve complex technical challenges.
-                  </p>
-                  <button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-pink-500 hover:to-purple-500 text-white px-8 py-3 rounded-full font-medium flex items-center gap-2 mx-auto transition-all">
-                    Get Consultation <ExternalLink size={20} />
-                  </button>
-                </div>
               </div>
             </div>
           </div>
