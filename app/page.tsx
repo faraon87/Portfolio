@@ -8,7 +8,7 @@ import {
   ExternalLink, Download, Calculator, BookOpen, Play, Pause,
   Clock, TrendingUp, BarChart3, CheckCircle, AlertTriangle,
   Brain, Cpu, Network, Shield, Database, Cloud, Wrench, RotateCcw,
-  Battery, Thermometer, Gauge, RefreshCw
+  Battery, Thermometer, Gauge, RefreshCw, Eye, Maximize2
 } from 'lucide-react'
 
 // Utility function with proper TypeScript
@@ -286,6 +286,287 @@ function EVDiagnosticsDashboard() {
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  )
+}
+
+// Enhanced Project Modal Component
+function ProjectModal({ project, isOpen, onClose }: { project: Project | null, isOpen: boolean, onClose: () => void }) {
+  if (!isOpen || !project) return null
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose}></div>
+      <div className="relative bg-zinc-900 border border-zinc-700/50 rounded-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 bg-zinc-900/95 backdrop-blur-sm border-b border-zinc-700/50 p-6 z-10">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-3xl font-bold text-white">{project.title}</h2>
+              <div className="flex items-center gap-4 mt-2">
+                <span className="text-purple-400 font-medium">{project.company}</span>
+                <span className="text-zinc-400 text-sm">{project.period}</span>
+              </div>
+            </div>
+            <button 
+              onClick={onClose}
+              className="p-2 hover:bg-zinc-800 rounded-lg transition-colors"
+            >
+              <X className="text-zinc-400 hover:text-white" size={24} />
+            </button>
+          </div>
+        </div>
+
+        <div className="p-6 space-y-8">
+          <p className="text-zinc-300 text-lg leading-relaxed">{project.description}</p>
+
+          {/* EV Diagnostics Dashboard Demo for Fisker */}
+          {project.hasDemo && project.title.includes('Fisker') && (
+            <div>
+              <h3 className="text-xl font-bold text-white mb-4">Interactive Demo</h3>
+              <EVDiagnosticsDashboard />
+            </div>
+          )}
+
+          {/* Key Achievements */}
+          <div>
+            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+              <Award className="text-purple-400" size={20} />
+              Key Achievements
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {project.achievements.map((achievement, idx) => (
+                <div key={idx} className="flex items-start gap-3 p-4 bg-zinc-800/50 rounded-lg border border-zinc-700/30">
+                  <CheckCircle className="text-green-400 mt-0.5 flex-shrink-0" size={16} />
+                  <span className="text-zinc-300">{achievement}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Special rendering for Humanoid Robotics project */}
+          {project.title.includes('Humanoid Robotics') && project.serviceRequirements && (
+            <div>
+              <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <Target className="text-blue-400" size={20} />
+                Service Requirements Evolution
+              </h3>
+              <div className="space-y-6">
+                {Object.values(project.serviceRequirements).map((year: any, index) => (
+                  <div key={index} className="border border-zinc-700/50 p-6 rounded-lg bg-zinc-800/30">
+                    <h4 className="font-bold text-white text-lg mb-2">{year.title}</h4>
+                    <p className="text-zinc-400 mb-4">{year.description}</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {year.details.map((detail: string, idx: number) => (
+                        <div key={idx} className="flex items-start gap-2">
+                          <ChevronRight size={16} className="text-blue-400 mt-1 flex-shrink-0" />
+                          <span className="text-zinc-300 text-sm">{detail}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Complete KPI Framework for Humanoid Robotics */}
+          {project.title.includes('Humanoid Robotics') && project.kpiFramework && (
+            <div>
+              <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <BarChart3 className="text-purple-400" size={20} />
+                Comprehensive KPI Framework
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {Object.entries(project.kpiFramework).map(([category, kpis]: [string, any]) => (
+                  <div key={category} className="border border-zinc-700/50 p-6 rounded-lg bg-zinc-800/30">
+                    <h4 className="font-bold text-blue-400 text-lg mb-4 capitalize">
+                      {category.replace(/([A-Z])/g, ' $1').trim()}
+                    </h4>
+                    <div className="space-y-2">
+                      {kpis.map((kpi: string, idx: number) => (
+                        <div key={idx} className="flex items-start gap-2">
+                          <Target size={14} className="text-purple-400 mt-1 flex-shrink-0" />
+                          <span className="text-zinc-300 text-sm">{kpi}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Challenges & Solutions */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div>
+              <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <AlertTriangle className="text-red-400" size={20} />
+                Challenges
+              </h3>
+              <div className="space-y-3">
+                {project.challenges.map((challenge, idx) => (
+                  <div key={idx} className="flex items-start gap-3 p-4 bg-red-500/10 rounded-lg border border-red-500/20">
+                    <AlertTriangle className="text-red-400 mt-0.5 flex-shrink-0" size={16} />
+                    <span className="text-zinc-300">{challenge}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <CheckCircle className="text-green-400" size={20} />
+                Solutions
+              </h3>
+              <div className="space-y-3">
+                {project.solutions.map((solution, idx) => (
+                  <div key={idx} className="flex items-start gap-3 p-4 bg-green-500/10 rounded-lg border border-green-500/20">
+                    <CheckCircle className="text-green-400 mt-0.5 flex-shrink-0" size={16} />
+                    <span className="text-zinc-300">{solution}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Technologies */}
+          <div>
+            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+              <Code className="text-cyan-400" size={20} />
+              Technologies & Tools
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {project.technologies.map((tech, idx) => (
+                <span key={idx} className="px-3 py-2 bg-zinc-800/70 border border-zinc-700/50 text-zinc-300 rounded-lg text-sm hover:bg-zinc-700/70 transition-colors">
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Impact */}
+          <div className="p-6 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-lg border border-purple-500/20">
+            <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
+              <TrendingUp className="text-purple-400" size={20} />
+              Impact & Results
+            </h3>
+            <p className="text-zinc-300 text-lg leading-relaxed">{project.impact}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Enhanced Project Card Component
+function ProjectCard({ project, onClick }: { project: Project, onClick: () => void }) {
+  const [isHovered, setIsHovered] = useState(false)
+
+  return (
+    <div 
+      className="relative group cursor-pointer"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={onClick}
+    >
+      {/* Animated background */}
+      <div className={cn(
+        "absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg blur opacity-75 transition duration-500",
+        isHovered ? "opacity-100 scale-105" : "opacity-75"
+      )}></div>
+      
+      <div className={cn(
+        "relative p-6 bg-zinc-900/80 backdrop-blur-sm border border-zinc-700/50 rounded-lg h-full transition-all duration-300",
+        isHovered ? "transform -translate-y-2 shadow-2xl" : ""
+      )}>
+        {/* Header */}
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex-1">
+            <h3 className="text-xl font-bold text-white mb-2 group-hover:text-purple-400 transition-colors">
+              {project.title}
+            </h3>
+            <div className="flex items-center gap-3 mb-2">
+              <span className="text-sm text-purple-400 bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/20">
+                {project.company}
+              </span>
+              <span className="text-xs text-zinc-500">{project.period}</span>
+            </div>
+          </div>
+          
+          <div className={cn(
+            "p-2 rounded-lg transition-all duration-300",
+            isHovered ? "bg-purple-500/20 text-purple-400" : "bg-zinc-800/50 text-zinc-500"
+          )}>
+            <Maximize2 size={18} />
+          </div>
+        </div>
+        
+        {/* Description */}
+        <p className="text-zinc-400 mb-4 line-clamp-3">{project.description}</p>
+        
+        {/* Preview of key achievements */}
+        <div className="mb-4">
+          <h4 className="text-sm font-semibold text-white mb-2">Key Highlights:</h4>
+          <ul className="space-y-1">
+            {project.achievements.slice(0, 3).map((achievement, idx) => (
+              <li key={idx} className="flex items-start gap-2 text-sm text-zinc-400">
+                <ChevronRight size={12} className="text-purple-400 mt-1 flex-shrink-0" />
+                <span className="line-clamp-1">{achievement}</span>
+              </li>
+            ))}
+          </ul>
+          {project.achievements.length > 3 && (
+            <p className="text-xs text-zinc-500 mt-2">+{project.achievements.length - 3} more achievements</p>
+          )}
+        </div>
+
+        {/* Technology preview */}
+        <div className="mb-4">
+          <div className="flex flex-wrap gap-1">
+            {project.technologies.slice(0, 4).map((tech, idx) => (
+              <span key={idx} className="px-2 py-1 bg-zinc-700/50 text-zinc-300 rounded text-xs">
+                {tech}
+              </span>
+            ))}
+            {project.technologies.length > 4 && (
+              <span className="px-2 py-1 bg-zinc-700/50 text-zinc-400 rounded text-xs">
+                +{project.technologies.length - 4} more
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Special indicators */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            {project.hasDemo && (
+              <span className="flex items-center gap-1 text-xs text-green-400 bg-green-500/10 px-2 py-1 rounded-full border border-green-500/20">
+                <Eye size={10} />
+                Live Demo
+              </span>
+            )}
+            {project.serviceRequirements && (
+              <span className="flex items-center gap-1 text-xs text-blue-400 bg-blue-500/10 px-2 py-1 rounded-full border border-blue-500/20">
+                <Target size={10} />
+                Strategy
+              </span>
+            )}
+          </div>
+          
+          <div className={cn(
+            "text-purple-400 font-medium text-sm transition-all duration-300 flex items-center gap-1",
+            isHovered ? "translate-x-1" : ""
+          )}>
+            View Details
+            <ArrowRight size={14} />
+          </div>
+        </div>
+
+        {/* Hover overlay */}
+        <div className={cn(
+          "absolute inset-0 bg-gradient-to-t from-purple-500/5 to-transparent rounded-lg transition-opacity duration-300",
+          isHovered ? "opacity-100" : "opacity-0"
+        )}></div>
       </div>
     </div>
   )
@@ -779,173 +1060,6 @@ function TrainingProgram() {
   )
 }
 
-// Project Card Component with Enhanced Details
-function ProjectCard({ 
-  title, 
-  company, 
-  period, 
-  description, 
-  achievements, 
-  technologies, 
-  challenges, 
-  solutions, 
-  impact, 
-  serviceRequirements, 
-  kpiFramework, 
-  hasDemo 
-}: {
-  title: string
-  company: string
-  period: string
-  description: string
-  achievements: string[]
-  technologies: string[]
-  challenges: string[]
-  solutions: string[]
-  impact: string
-  serviceRequirements?: any
-  kpiFramework?: any
-  hasDemo?: boolean
-}) {
-  const [expanded, setExpanded] = useState<boolean>(false)
-
-  return (
-    <div className="relative group">
-      <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
-      <div className="relative p-6 bg-zinc-900/80 backdrop-blur-sm border border-zinc-700/50 rounded-lg h-full">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xl font-bold text-white">{title}</h3>
-          <div className="text-center">
-            <span className="text-sm text-purple-400 bg-purple-500/10 px-3 py-1 rounded-full block">
-              {company}
-            </span>
-            <span className="text-xs text-zinc-500 mt-1 block">{period}</span>
-          </div>
-        </div>
-        
-        <p className="text-zinc-400 mb-4">{description}</p>
-        
-        {/* EV Diagnostics Dashboard Demo for Fisker */}
-        {hasDemo && title.includes('Fisker') && <EVDiagnosticsDashboard />}
-        
-        <div className="mb-4">
-          <h4 className="text-sm font-semibold text-white mb-2">Key Achievements:</h4>
-          <ul className="space-y-1">
-            {achievements.slice(0, expanded ? achievements.length : 3).map((achievement, idx) => (
-              <li key={idx} className="flex items-start gap-2 text-sm text-zinc-400">
-                <ChevronRight size={12} className="text-purple-400 mt-1 flex-shrink-0" />
-                {achievement}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {expanded && (
-          <>
-            {/* Special rendering for Humanoid Robotics project */}
-            {title.includes('Humanoid Robotics') && serviceRequirements && (
-              <div className="mb-4">
-                <h4 className="text-sm font-semibold text-white mb-2">Service Requirements Evolution:</h4>
-                <div className="space-y-3">
-                  {Object.values(serviceRequirements).map((year: any, index) => (
-                    <div key={index} className="border border-zinc-600 p-3 rounded-lg">
-                      <h5 className="font-semibold text-white text-xs mb-1">{year.title}</h5>
-                      <p className="text-zinc-400 text-xs mb-2">{year.description}</p>
-                      <ul className="space-y-1">
-                        {year.details.map((detail: string, idx: number) => (
-                          <li key={idx} className="flex items-start gap-2 text-xs text-zinc-400">
-                            <ChevronRight size={10} className="text-blue-400 mt-1 flex-shrink-0" />
-                            {detail}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Complete KPI Framework for Humanoid Robotics */}
-            {title.includes('Humanoid Robotics') && kpiFramework && (
-              <div className="mb-4">
-                <h4 className="text-sm font-semibold text-white mb-2">Comprehensive KPI Framework:</h4>
-                <div className="grid grid-cols-2 gap-3">
-                  {Object.entries(kpiFramework).map(([category, kpis]: [string, any]) => (
-                    <div key={category} className="border border-zinc-600 p-3 rounded-lg">
-                      <h5 className="font-semibold text-blue-400 text-xs mb-2 capitalize">
-                        {category.replace(/([A-Z])/g, ' $1').trim()}
-                      </h5>
-                      <ul className="space-y-1">
-                        {kpis.map((kpi: string, idx: number) => (
-                          <li key={idx} className="flex items-start gap-2 text-xs text-zinc-400">
-                            <Target size={8} className="text-purple-400 mt-1 flex-shrink-0" />
-                            {kpi}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <div className="mb-4">
-              <h4 className="text-sm font-semibold text-white mb-2">Challenges & Solutions:</h4>
-              <div className="grid grid-cols-1 gap-3">
-                <div>
-                  <h5 className="text-xs font-medium text-red-400 mb-1">Challenges</h5>
-                  {challenges.slice(0, 2).map((challenge, idx) => (
-                    <div key={idx} className="flex items-start gap-2 text-xs text-zinc-400 mb-1">
-                      <AlertTriangle size={10} className="text-red-400 mt-1 flex-shrink-0" />
-                      {challenge}
-                    </div>
-                  ))}
-                </div>
-                <div>
-                  <h5 className="text-xs font-medium text-green-400 mb-1">Solutions</h5>
-                  {solutions.slice(0, 2).map((solution, idx) => (
-                    <div key={idx} className="flex items-start gap-2 text-xs text-zinc-400 mb-1">
-                      <CheckCircle size={10} className="text-green-400 mt-1 flex-shrink-0" />
-                      {solution}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="mb-4 p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
-              <h4 className="text-sm font-semibold text-blue-400 mb-1">Impact</h4>
-              <p className="text-xs text-zinc-300">{impact}</p>
-            </div>
-          </>
-        )}
-        
-        <div className="mb-4">
-          <div className="flex flex-wrap gap-1">
-            {technologies.slice(0, expanded ? technologies.length : 4).map((tech, idx) => (
-              <span key={idx} className="px-2 py-1 bg-zinc-700/50 text-zinc-300 rounded text-xs">
-                {tech}
-              </span>
-            ))}
-            {!expanded && technologies.length > 4 && (
-              <span className="px-2 py-1 bg-zinc-700/50 text-zinc-400 rounded text-xs">
-                +{technologies.length - 4} more
-              </span>
-            )}
-          </div>
-        </div>
-
-        <button
-          onClick={() => setExpanded(!expanded)}
-          className="text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors"
-        >
-          {expanded ? 'Show Less' : 'Show More'} 
-        </button>
-      </div>
-    </div>
-  )
-}
-
 // Floating Navigation Component
 function FloatingNav() {
   const [isVisible, setIsVisible] = useState<boolean>(false)
@@ -1012,6 +1126,9 @@ function FloatingNav() {
 }
 
 export default function Portfolio() {
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+
   const achievements: Achievement[] = [
     { value: '$6.2M+', label: 'Cost Savings Generated', icon: DollarSign },
     { value: '300+', label: 'Professionals Trained', icon: Users },
@@ -1252,8 +1369,18 @@ export default function Portfolio() {
         'Performance tracking and continuous improvement processes'
       ],
       impact: 'Transformed Bentley APAC product support operations with comprehensive management procedures, enhancing quality assurance and operational efficiency for luxury automotive market'
-    }
+
   ]
+
+  const openProjectModal = (project: Project) => {
+    setSelectedProject(project)
+    setIsModalOpen(true)
+  }
+
+  const closeProjectModal = () => {
+    setIsModalOpen(false)
+    setSelectedProject(null)
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-900 via-zinc-900 to-black text-white overflow-hidden">
@@ -1411,7 +1538,7 @@ export default function Portfolio() {
         </div>
       </section>
 
-      {/* Projects Section */}
+      {/* Enhanced Projects Section */}
       <section id="projects" className="py-32 relative">
         <div className="absolute inset-0 z-0">
           <div className="absolute top-1/3 left-1/3 w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
@@ -1427,27 +1554,24 @@ export default function Portfolio() {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {projects.map((project, index) => (
               <ProjectCard 
                 key={index} 
-                title={project.title}
-                company={project.company}
-                period={project.period}
-                description={project.description}
-                achievements={project.achievements}
-                technologies={project.technologies}
-                challenges={project.challenges}
-                solutions={project.solutions}
-                impact={project.impact}
-                serviceRequirements={project.serviceRequirements}
-                kpiFramework={project.kpiFramework}
-                hasDemo={project.hasDemo}
+                project={project}
+                onClick={() => openProjectModal(project)}
               />
             ))}
           </div>
         </div>
       </section>
+
+      {/* Project Modal */}
+      <ProjectModal 
+        project={selectedProject}
+        isOpen={isModalOpen}
+        onClose={closeProjectModal}
+      />
 
       {/* Skills Section */}
       <section id="skills" className="py-32 relative">
