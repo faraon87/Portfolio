@@ -412,12 +412,20 @@ function EVOscilloscopeInterface() {
   );
 }
 
+// Types for lesson steps
+interface LessonStep {
+  title: string;
+  content: string;
+  interactive: string;
+  task: string;
+}
+
 // Interactive Lesson Component
 function InteractiveLesson({ lesson, onComplete }: { lesson: string; onComplete: () => void }) {
   const [currentStep, setCurrentStep] = useState(0);
   const [completed, setCompleted] = useState(false);
 
-  const lessonSteps = {
+  const lessonSteps: Record<string, LessonStep[]> = {
     'CAN Bus Physical Layer Analysis': [
       {
         title: 'Understanding CAN Bus Signals',
