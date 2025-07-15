@@ -60,8 +60,19 @@ interface TrainingModule {
   topics: string[]
 }
 
+interface TrainingModuleDetailed {
+  id: number;
+  title: string;
+  duration: string;
+  difficulty: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert';
+  description: string;
+  lessons: string[];
+  completed?: boolean;
+  current?: boolean;
+}
+
 // Training Module Data for EV Diagnostics
-const trainingModules = [
+const trainingModules: TrainingModuleDetailed[] = [
   {
     id: 1,
     title: 'PicoScope Fundamentals for EV Technicians',
@@ -135,15 +146,25 @@ const trainingModules = [
   }
 ];
 
+// Types for signal configuration
+type SignalType = 'can-bus' | 'motor-pwm' | 'battery-cell' | 'charging';
+
+interface SignalConfig {
+  name: string;
+  description: string;
+  frequency: string;
+  amplitude: string;
+}
+
 // Simulated Oscilloscope Interface
 function EVOscilloscopeInterface() {
   const [isCapturing, setIsCapturing] = useState(false);
-  const [selectedSignal, setSelectedSignal] = useState('can-bus');
+  const [selectedSignal, setSelectedSignal] = useState<SignalType>('can-bus');
   const [timebase, setTimebase] = useState('500us');
   const [voltageRange, setVoltageRange] = useState('5V');
   const [triggerLevel, setTriggerLevel] = useState(2.5);
 
-  const signalTypes = {
+  const signalTypes: Record<SignalType, SignalConfig> = {
     'can-bus': {
       name: 'CAN Bus High',
       description: 'Differential CAN signal showing normal communication',
@@ -233,7 +254,7 @@ function EVOscilloscopeInterface() {
           <label className="block text-green-300 mb-1">Signal Type</label>
           <select 
             value={selectedSignal}
-            onChange={(e) => setSelectedSignal(e.target.value)}
+            onChange={(e) => setSelectedSignal(e.target.value as SignalType)}
             className="w-full bg-gray-900 border border-green-500/50 rounded p-1 text-green-400"
           >
             {Object.entries(signalTypes).map(([key, signal]) => (
@@ -392,7 +413,7 @@ function EVOscilloscopeInterface() {
 }
 
 // Interactive Lesson Component
-function InteractiveLesson({ lesson, onComplete }) {
+function InteractiveLesson({ lesson, onComplete }: { lesson: string; onComplete: () => void }) {
   const [currentStep, setCurrentStep] = useState(0);
   const [completed, setCompleted] = useState(false);
 
