@@ -1,40 +1,43 @@
-'use client'
+"use client"
 
-import React, { useState, useEffect } from 'react'
-import { cn } from '@/lib/utils'
+import { useState, useEffect } from 'react'
 import { 
-  ChevronDown, 
-  ChevronRight, 
-  Download, 
-  ExternalLink, 
-  Github, 
-  Linkedin, 
-  Mail, 
-  Phone,
-  MapPin,
-  Calendar,
-  CheckCircle,
-  AlertTriangle,
-  TrendingUp,
-  Target,
-  DollarSign,
-  Users,
-  Zap,
-  Clock,
-  Award,
-  Activity,
-  Play, 
-  Pause, 
-  RotateCcw, 
-  Battery, 
-  BookOpen,
-  ArrowRight,
-  Settings,
-  Eye,
-  Upload
+  ArrowRight, Github, Linkedin, Mail, Phone, DollarSign, Users, 
+  Code, Award, Globe, Zap, ChevronRight, Target, Activity,
+  Settings, Briefcase, GraduationCap, Building, Menu, X,
+  ExternalLink, Download, Calculator, BookOpen, Play, Pause,
+  Clock, TrendingUp, BarChart3, CheckCircle, AlertTriangle,
+  Brain, Cpu, Network, Shield, Database, Cloud, Wrench, RotateCcw,
+  Battery, Thermometer, Gauge, RefreshCw, Eye, Maximize2
 } from 'lucide-react'
 
-// Types
+// Utility function with proper TypeScript
+function cn(...classes: (string | undefined | null | boolean)[]): string {
+  return classes.filter(Boolean).join(' ')
+}
+
+// Type definitions
+interface Achievement {
+  value: string
+  label: string
+  icon: any
+}
+
+interface Company {
+  name: string
+  role: string
+  period: string
+  color: string
+  industry: string
+  location: string
+  achievements: string[]
+}
+
+interface Skill {
+  name: string
+  level: number
+}
+
 interface Project {
   title: string
   company: string
@@ -45,11 +48,45 @@ interface Project {
   challenges: string[]
   solutions: string[]
   impact: string
+  serviceRequirements?: any
+  kpiFramework?: any
+  hasDemo?: boolean
 }
 
-interface Skill {
+interface EVSystem {
+  id: string
   name: string
-  level: number
+  status: string
+  alerts: number
+  description: string
+}
+
+interface RealTimeData {
+  batterySOC: number
+  batterySOH: number
+  batteryTemp: number
+  motorTemp: number
+  batteryVoltage: number
+  motorPower: number
+}
+
+interface ROIInputs {
+  serviceTeamSize: number
+  avgDiagnosticTime: number
+  escalationRate: number
+  technicianHourlyRate: number
+  monthlyVehicleVolume: number
+  trainingCostPerTech: number
+  downtimeHours: number
+}
+
+interface ROIResults {
+  currentMonthlyCosts: number
+  monthlySavings: number
+  annualSavings: number
+  trainingInvestment: number
+  roi: number
+  paybackMonths: number
 }
 
 interface TrainingModule {
@@ -58,6 +95,16 @@ interface TrainingModule {
   duration: string
   description: string
   topics: string[]
+}
+
+// Types for signal configuration
+type SignalType = 'can-bus' | 'motor-pwm' | 'battery-cell' | 'charging';
+
+interface SignalConfig {
+  name: string;
+  description: string;
+  frequency: string;
+  amplitude: string;
 }
 
 interface TrainingModuleDetailed {
@@ -69,6 +116,14 @@ interface TrainingModuleDetailed {
   lessons: string[];
   completed?: boolean;
   current?: boolean;
+}
+
+// Types for lesson steps
+interface LessonStep {
+  title: string;
+  content: string;
+  interactive: string;
+  task: string;
 }
 
 // Training Module Data for EV Diagnostics
@@ -145,16 +200,6 @@ const trainingModules: TrainingModuleDetailed[] = [
     completed: false
   }
 ];
-
-// Types for signal configuration
-type SignalType = 'can-bus' | 'motor-pwm' | 'battery-cell' | 'charging';
-
-interface SignalConfig {
-  name: string;
-  description: string;
-  frequency: string;
-  amplitude: string;
-}
 
 // Simulated Oscilloscope Interface
 function EVOscilloscopeInterface() {
@@ -410,14 +455,6 @@ function EVOscilloscopeInterface() {
       </div>
     </div>
   );
-}
-
-// Types for lesson steps
-interface LessonStep {
-  title: string;
-  content: string;
-  interactive: string;
-  task: string;
 }
 
 // Interactive Lesson Component
@@ -717,7 +754,830 @@ function EVDiagnosticsTraining() {
   );
 }
 
-// Mock Training Program Component for other modules
+// EV Diagnostics Dashboard Component
+function EVDiagnosticsDashboard() {
+  const [selectedSystem, setSelectedSystem] = useState<string>('BMS')
+  const [isScanning, setIsScanning] = useState<boolean>(false)
+  const [diagnosticData, setDiagnosticData] = useState<any>({})
+  
+  // Real-time data simulation
+  const [realTimeData, setRealTimeData] = useState<RealTimeData>({
+    batterySOC: 75.9,
+    batterySOH: 94.6,
+    batteryTemp: 39,
+    motorTemp: 45,
+    batteryVoltage: 376,
+    motorPower: 62.6,
+  })
+
+  // Simulate real-time data updates
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRealTimeData(prev => ({
+        batterySOC: Math.max(20, Math.min(100, prev.batterySOC + (Math.random() - 0.5) * 1)),
+        batterySOH: Math.max(85, Math.min(100, prev.batterySOH + (Math.random() - 0.5) * 0.1)),
+        batteryTemp: Math.max(15, Math.min(45, prev.batteryTemp + (Math.random() - 0.5) * 2)),
+        motorTemp: Math.max(25, Math.min(80, prev.motorTemp + (Math.random() - 0.5) * 3)),
+        batteryVoltage: Math.max(350, Math.min(450, prev.batteryVoltage + (Math.random() - 0.5) * 10)),
+        motorPower: Math.max(0, Math.min(150, prev.motorPower + (Math.random() - 0.5) * 10))
+      }))
+    }, 2000)
+    return () => clearInterval(interval)
+  }, [])
+  
+  const evSystems: EVSystem[] = [
+    { id: 'BMS', name: 'Battery Management System', status: 'healthy', alerts: 0, description: 'SOC, SOH, Cell Balancing' },
+    { id: 'Motor', name: 'Motor Control Unit', status: 'healthy', alerts: 0, description: 'Torque, Speed, Efficiency' },
+    { id: 'Charging', name: 'Charging System', status: 'charging', alerts: 0, description: 'AC/DC Charging, Power Management' },
+    { id: 'Thermal', name: 'Thermal Management', status: 'warning', alerts: 1, description: 'Battery & Motor Cooling' },
+    { id: 'HV', name: 'High Voltage System', status: 'healthy', alerts: 0, description: 'Insulation, Safety, Distribution' },
+    { id: 'Energy', name: 'Energy Management', status: 'healthy', alerts: 0, description: 'Consumption, Regeneration, Range' }
+  ]
+
+  const handleScan = () => {
+    setIsScanning(true)
+    setTimeout(() => {
+      setDiagnosticData({
+        scanTime: new Date().toLocaleTimeString(),
+        vehicleStatus: 'Connected',
+        totalSystems: 6,
+        healthySystems: 5,
+        systemsWithAlerts: 1
+      })
+      setIsScanning(false)
+    }, 3000)
+  }
+
+  return (
+    <div className="bg-zinc-900/90 text-white p-6 rounded-lg mb-6 border border-zinc-700/50">
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h4 className="text-xl font-bold mb-2">FAST Tool - Vehicle Diagnostics Dashboard</h4>
+            <p className="text-zinc-400 text-sm">Real-time EV diagnostics and system monitoring interface</p>
+          </div>
+          <button 
+            onClick={handleScan}
+            disabled={isScanning}
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 text-sm"
+          >
+            <RefreshCw className={isScanning ? 'animate-spin' : ''} size={16} />
+            {isScanning ? 'Scanning...' : 'System Scan'}
+          </button>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
+          <div className="bg-zinc-800/70 p-3 rounded-lg">
+            <div className="flex items-center gap-2 mb-2">
+              <Battery className="text-green-400" size={16} />
+              <span className="text-xs text-zinc-400">SOC</span>
+            </div>
+            <div className="text-lg font-bold">{realTimeData.batterySOC.toFixed(1)}%</div>
+          </div>
+          
+          <div className="bg-zinc-800/70 p-3 rounded-lg">
+            <div className="flex items-center gap-2 mb-2">
+              <Activity className="text-blue-400" size={16} />
+              <span className="text-xs text-zinc-400">SOH</span>
+            </div>
+            <div className="text-lg font-bold">{realTimeData.batterySOH.toFixed(1)}%</div>
+          </div>
+          
+          <div className="bg-zinc-800/70 p-3 rounded-lg">
+            <div className="flex items-center gap-2 mb-2">
+              <Zap className="text-yellow-400" size={16} />
+              <span className="text-xs text-zinc-400">HV</span>
+            </div>
+            <div className="text-lg font-bold">{realTimeData.batteryVoltage.toFixed(0)}V</div>
+          </div>
+          
+          <div className="bg-zinc-800/70 p-3 rounded-lg">
+            <div className="flex items-center gap-2 mb-2">
+              <Thermometer className="text-orange-400" size={16} />
+              <span className="text-xs text-zinc-400">Temp</span>
+            </div>
+            <div className="text-lg font-bold">{realTimeData.batteryTemp.toFixed(0)}°C</div>
+          </div>
+          
+          <div className="bg-zinc-800/70 p-3 rounded-lg">
+            <div className="flex items-center gap-2 mb-2">
+              <Gauge className="text-purple-400" size={16} />
+              <span className="text-xs text-zinc-400">Power</span>
+            </div>
+            <div className="text-lg font-bold">{realTimeData.motorPower.toFixed(1)}kW</div>
+          </div>
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-4">
+          <div className="bg-zinc-800/70 p-4 rounded-lg">
+            <h5 className="text-sm font-bold mb-3">EV System Status</h5>
+            <div className="space-y-2">
+              {evSystems.map((system) => (
+                <div
+                  key={system.id}
+                  className={`p-3 rounded-lg cursor-pointer transition-colors text-sm ${
+                    selectedSystem === system.id ? 'bg-blue-600/50' : 'bg-zinc-700/50 hover:bg-zinc-600/50'
+                  }`}
+                  onClick={() => setSelectedSystem(system.id)}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="font-medium text-xs">{system.name}</div>
+                      <div className="text-xs text-zinc-400">{system.description}</div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {system.status === 'healthy' && <CheckCircle className="text-green-400" size={14} />}
+                      {system.status === 'warning' && <AlertTriangle className="text-yellow-400" size={14} />}
+                      {system.status === 'charging' && <Zap className="text-blue-400" size={14} />}
+                      <span className="text-xs">{system.alerts} alerts</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-zinc-800/70 p-4 rounded-lg">
+            <h5 className="text-sm font-bold mb-3">Advanced Diagnostics</h5>
+            <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="text-center">
+                  <div className="text-lg font-bold text-cyan-400">271</div>
+                  <div className="text-xs text-zinc-400">Wh/km</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-lg font-bold text-green-400">972</div>
+                  <div className="text-xs text-zinc-400">MΩ Insulation</div>
+                </div>
+              </div>
+              
+              <div className="border-t border-zinc-600 pt-3">
+                <div className="text-xs text-zinc-300 mb-2">Battery Cell Balance</div>
+                <div className="grid grid-cols-8 gap-1">
+                  {Array.from({length: 8}, (_, i: number) => (
+                    <div key={i} className="h-4 bg-green-500 rounded-sm opacity-90"></div>
+                  ))}
+                </div>
+              </div>
+
+              {diagnosticData.scanTime && (
+                <div className="border-t border-zinc-600 pt-3">
+                  <div className="text-xs text-zinc-300 mb-2">Latest Scan Results</div>
+                  <div className="grid grid-cols-3 gap-2 text-center">
+                    <div>
+                      <div className="text-sm font-bold text-green-400">{diagnosticData.healthySystems}</div>
+                      <div className="text-xs text-zinc-400">Healthy</div>
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-yellow-400">{diagnosticData.systemsWithAlerts}</div>
+                      <div className="text-xs text-zinc-400">Alerts</div>
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-blue-400">{diagnosticData.totalSystems}</div>
+                      <div className="text-xs text-zinc-400">Total</div>
+                    </div>
+                  </div>
+                  <div className="text-xs text-zinc-400 mt-2">Scan: {diagnosticData.scanTime}</div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Enhanced Project Modal Component
+function ProjectModal({ project, isOpen, onClose }: { project: Project | null, isOpen: boolean, onClose: () => void }) {
+  if (!isOpen || !project) return null
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose}></div>
+      <div className="relative bg-zinc-900 border border-zinc-700/50 rounded-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 bg-zinc-900/95 backdrop-blur-sm border-b border-zinc-700/50 p-6 z-10">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-3xl font-bold text-white">{project.title}</h2>
+              <div className="flex items-center gap-4 mt-2">
+                <span className="text-purple-400 font-medium">{project.company}</span>
+                <span className="text-zinc-400 text-sm">{project.period}</span>
+              </div>
+            </div>
+            <button 
+              onClick={onClose}
+              className="p-2 hover:bg-zinc-800 rounded-lg transition-colors"
+            >
+              <X className="text-zinc-400 hover:text-white" size={24} />
+            </button>
+          </div>
+        </div>
+
+        <div className="p-6 space-y-8">
+          <p className="text-zinc-300 text-lg leading-relaxed">{project.description}</p>
+
+          {/* EV Diagnostics Dashboard Demo for Fisker */}
+          {project.hasDemo && project.title.includes('Fisker') && (
+            <div>
+              <h3 className="text-xl font-bold text-white mb-4">Interactive Demo</h3>
+              <EVDiagnosticsDashboard />
+            </div>
+          )}
+
+          {/* Key Achievements */}
+          <div>
+            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+              <Award className="text-purple-400" size={20} />
+              Key Achievements
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {project.achievements.map((achievement, idx) => (
+                <div key={idx} className="flex items-start gap-3 p-4 bg-zinc-800/50 rounded-lg border border-zinc-700/30">
+                  <CheckCircle className="text-green-400 mt-0.5 flex-shrink-0" size={16} />
+                  <span className="text-zinc-300">{achievement}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Special rendering for Humanoid Robotics project */}
+          {project.title.includes('Humanoid Robotics') && project.serviceRequirements && (
+            <div>
+              <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <Target className="text-blue-400" size={20} />
+                Service Requirements Evolution
+              </h3>
+              <div className="space-y-6">
+                {Object.values(project.serviceRequirements).map((year: any, index) => (
+                  <div key={index} className="border border-zinc-700/50 p-6 rounded-lg bg-zinc-800/30">
+                    <h4 className="font-bold text-white text-lg mb-2">{year.title}</h4>
+                    <p className="text-zinc-400 mb-4">{year.description}</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {year.details.map((detail: string, idx: number) => (
+                        <div key={idx} className="flex items-start gap-2">
+                          <ChevronRight size={16} className="text-blue-400 mt-1 flex-shrink-0" />
+                          <span className="text-zinc-300 text-sm">{detail}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Complete KPI Framework for Humanoid Robotics */}
+          {project.title.includes('Humanoid Robotics') && project.kpiFramework && (
+            <div>
+              <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <BarChart3 className="text-purple-400" size={20} />
+                Comprehensive KPI Framework
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {Object.entries(project.kpiFramework).map(([category, kpis]: [string, any]) => (
+                  <div key={category} className="border border-zinc-700/50 p-6 rounded-lg bg-zinc-800/30">
+                    <h4 className="font-bold text-blue-400 text-lg mb-4 capitalize">
+                      {category.replace(/([A-Z])/g, ' $1').trim()}
+                    </h4>
+                    <div className="space-y-2">
+                      {kpis.map((kpi: string, idx: number) => (
+                        <div key={idx} className="flex items-start gap-2">
+                          <Target size={14} className="text-purple-400 mt-1 flex-shrink-0" />
+                          <span className="text-zinc-300 text-sm">{kpi}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Challenges & Solutions */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div>
+              <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <AlertTriangle className="text-red-400" size={20} />
+                Challenges
+              </h3>
+              <div className="space-y-3">
+                {project.challenges.map((challenge, idx) => (
+                  <div key={idx} className="flex items-start gap-3 p-4 bg-red-500/10 rounded-lg border border-red-500/20">
+                    <AlertTriangle className="text-red-400 mt-0.5 flex-shrink-0" size={16} />
+                    <span className="text-zinc-300">{challenge}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <CheckCircle className="text-green-400" size={20} />
+                Solutions
+              </h3>
+              <div className="space-y-3">
+                {project.solutions.map((solution, idx) => (
+                  <div key={idx} className="flex items-start gap-3 p-4 bg-green-500/10 rounded-lg border border-green-500/20">
+                    <CheckCircle className="text-green-400 mt-0.5 flex-shrink-0" size={16} />
+                    <span className="text-zinc-300">{solution}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Technologies */}
+          <div>
+            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+              <Code className="text-cyan-400" size={20} />
+              Technologies & Tools
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {project.technologies.map((tech, idx) => (
+                <span key={idx} className="px-3 py-2 bg-zinc-800/70 border border-zinc-700/50 text-zinc-300 rounded-lg text-sm hover:bg-zinc-700/70 transition-colors">
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Impact */}
+          <div className="p-6 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-lg border border-purple-500/20">
+            <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
+              <TrendingUp className="text-purple-400" size={20} />
+              Impact & Results
+            </h3>
+            <p className="text-zinc-300 text-lg leading-relaxed">{project.impact}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Enhanced Project Card Component
+function ProjectCard({ project, onClick }: { project: Project, onClick: () => void }) {
+  const [isHovered, setIsHovered] = useState(false)
+
+  return (
+    <div 
+      className="relative group cursor-pointer"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={onClick}
+    >
+      {/* Animated background */}
+      <div className={cn(
+        "absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg blur opacity-75 transition duration-500",
+        isHovered ? "opacity-100 scale-105" : "opacity-75"
+      )}></div>
+      
+      <div className={cn(
+        "relative p-6 bg-zinc-900/80 backdrop-blur-sm border border-zinc-700/50 rounded-lg h-full transition-all duration-300",
+        isHovered ? "transform -translate-y-2 shadow-2xl" : ""
+      )}>
+        {/* Header */}
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex-1">
+            <h3 className="text-xl font-bold text-white mb-2 group-hover:text-purple-400 transition-colors">
+              {project.title}
+            </h3>
+            <div className="flex items-center gap-3 mb-2">
+              <span className="text-sm text-purple-400 bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/20">
+                {project.company}
+              </span>
+              <span className="text-xs text-zinc-500">{project.period}</span>
+            </div>
+          </div>
+          
+          <div className={cn(
+            "p-2 rounded-lg transition-all duration-300",
+            isHovered ? "bg-purple-500/20 text-purple-400" : "bg-zinc-800/50 text-zinc-500"
+          )}>
+            <Maximize2 size={18} />
+          </div>
+        </div>
+        
+        {/* Description */}
+        <p className="text-zinc-400 mb-4 line-clamp-3">{project.description}</p>
+        
+        {/* Preview of key achievements */}
+        <div className="mb-4">
+          <h4 className="text-sm font-semibold text-white mb-2">Key Highlights:</h4>
+          <ul className="space-y-1">
+            {project.achievements.slice(0, 3).map((achievement, idx) => (
+              <li key={idx} className="flex items-start gap-2 text-sm text-zinc-400">
+                <ChevronRight size={12} className="text-purple-400 mt-1 flex-shrink-0" />
+                <span className="line-clamp-1">{achievement}</span>
+              </li>
+            ))}
+          </ul>
+          {project.achievements.length > 3 && (
+            <p className="text-xs text-zinc-500 mt-2">+{project.achievements.length - 3} more achievements</p>
+          )}
+        </div>
+
+        {/* Technology preview */}
+        <div className="mb-4">
+          <div className="flex flex-wrap gap-1">
+            {project.technologies.slice(0, 4).map((tech, idx) => (
+              <span key={idx} className="px-2 py-1 bg-zinc-700/50 text-zinc-300 rounded text-xs">
+                {tech}
+              </span>
+            ))}
+            {project.technologies.length > 4 && (
+              <span className="px-2 py-1 bg-zinc-700/50 text-zinc-400 rounded text-xs">
+                +{project.technologies.length - 4} more
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Special indicators */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            {project.hasDemo && (
+              <span className="flex items-center gap-1 text-xs text-green-400 bg-green-500/10 px-2 py-1 rounded-full border border-green-500/20">
+                <Eye size={10} />
+                Live Demo
+              </span>
+            )}
+            {project.serviceRequirements && (
+              <span className="flex items-center gap-1 text-xs text-blue-400 bg-blue-500/10 px-2 py-1 rounded-full border border-blue-500/20">
+                <Target size={10} />
+                Strategy
+              </span>
+            )}
+          </div>
+          
+          <div className={cn(
+            "text-purple-400 font-medium text-sm transition-all duration-300 flex items-center gap-1",
+            isHovered ? "translate-x-1" : ""
+          )}>
+            View Details
+            <ArrowRight size={14} />
+          </div>
+        </div>
+
+        {/* Hover overlay */}
+        <div className={cn(
+          "absolute inset-0 bg-gradient-to-t from-purple-500/5 to-transparent rounded-lg transition-opacity duration-300",
+          isHovered ? "opacity-100" : "opacity-0"
+        )}></div>
+      </div>
+    </div>
+  )
+}
+
+// Timeline Component for Work Experience
+function VerticalTimeline() {
+  const companies: Company[] = [
+    { 
+      name: 'Evaluate Consulting', 
+      role: 'Founder & Multi-Domain Consultant', 
+      period: '2024-Present', 
+      color: 'bg-purple-500',
+      industry: 'Cross-Industry Consulting',
+      location: 'Global',
+      achievements: [
+        'Trained 50+ service engineers across multiple clients',
+        'Reduced technical escalations by 30%',
+        'Implemented process automation improving workflows by 20%'
+      ]
+    },
+    { 
+      name: 'Fisker', 
+      role: 'Service Product Manager & Engineer', 
+      period: '2022-2024', 
+      color: 'bg-green-500',
+      industry: 'Electric Vehicles',
+      location: 'Global',
+      achievements: [
+        'Reduced ECU flashing time by 40% (60 to 35 minutes)',
+        'Increased diagnostic efficiency by 35%',
+        'Saved $2M in supplier costs through RFI/RFP optimization',
+        'Trained 150+ engineers globally on diagnostic protocols'
+      ]
+    },
+    { 
+      name: 'Rivian', 
+      role: 'Diagnostics Engineer', 
+      period: '2021-2022', 
+      color: 'bg-blue-500',
+      industry: 'Electric Vehicles',
+      location: 'USA',
+      achievements: [
+        'Reduced remote diagnostic response time by 60%',
+        'Saved $1.2M annually through tool optimization',
+        'Boosted internal software adoption by 45%',
+        'Increased issue resolution rate by 25%'
+      ]
+    },
+    { 
+      name: 'Tesla', 
+      role: 'Lead Field Remote Diagnostics Engineer', 
+      period: '2018-2021', 
+      color: 'bg-red-500',
+      industry: 'Electric Vehicles',
+      location: 'Global',
+      achievements: [
+        'Resolved 32,000+ engineering escalations',
+        'Reduced field diagnostic time by 50%',
+        'Saved $3M in buyback investigations',
+        'Enhanced service readiness across 4 global regions'
+      ]
+    },
+    { 
+      name: 'Iridium', 
+      role: 'Product Support Engineer', 
+      period: '2014-2016', 
+      color: 'bg-indigo-500',
+      industry: 'Satellite Communications',
+      location: 'USA',
+      achievements: [
+        'Ensured 99.99% satellite uptime',
+        'Managed 66 Low Earth Orbit satellites',
+        'Increased network reliability by 40%',
+        'Reduced troubleshooting time by 50%'
+      ]
+    },
+    { 
+      name: 'Verizon', 
+      role: 'Technical Consultant', 
+      period: '2005-2014', 
+      color: 'bg-red-600',
+      industry: 'Telecommunications',
+      location: 'USA',
+      achievements: [
+        'Optimized 500+ cell sites',
+        'Reduced average resolution time by 25%',
+        'Led 3G, LTE, and LTE-A deployments',
+        'Improved RF coverage reducing disruptions by 15%'
+      ]
+    }
+  ]
+
+  return (
+    <div className="relative max-w-4xl mx-auto">
+      {/* Central timeline line */}
+      <div className="absolute left-1/2 transform -translate-x-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-purple-500 via-blue-500 to-green-500"></div>
+      
+      <div className="space-y-12">
+        {companies.map((company, index) => (
+          <div key={index} className="relative">
+            {/* Timeline node - centered */}
+            <div className={cn(
+              "absolute left-1/2 transform -translate-x-1/2 w-4 h-4 rounded-full border-4 border-zinc-900 z-10",
+              company.color
+            )}></div>
+            
+            {/* Content card - alternating sides */}
+            <div className={cn(
+              "relative flex w-full",
+              index % 2 === 0 ? "justify-start pr-1/2 pr-8" : "justify-end pl-1/2 pl-8"
+            )}>
+              <div className={cn(
+                "relative group max-w-md w-full",
+                index % 2 === 0 ? "" : "text-right"
+              )}>
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
+                <div className="relative p-6 bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-lg">
+                  <div className={cn(
+                    "flex items-center justify-between mb-3", 
+                    index % 2 !== 0 ? "flex-row-reverse" : ""
+                  )}>
+                    <h3 className="text-xl font-bold text-white">{company.name}</h3>
+                    <span className="text-xs text-zinc-400 bg-zinc-700/50 px-2 py-1 rounded-full">
+                      {company.period}
+                    </span>
+                  </div>
+                  <p className="text-purple-400 font-medium mb-1">{company.role}</p>
+                  <p className="text-zinc-400 text-sm mb-3">{company.industry} • {company.location}</p>
+                  
+                  <div className="space-y-1">
+                    {company.achievements.slice(0, 2).map((achievement, idx) => (
+                      <div key={idx} className={cn(
+                        "flex items-start gap-2 text-sm text-zinc-300",
+                        index % 2 !== 0 ? "flex-row-reverse text-right" : ""
+                      )}>
+                        <ChevronRight size={12} className="text-purple-400 mt-1 flex-shrink-0" />
+                        {achievement}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// Skills Grid Component
+function SkillsGrid() {
+  const skills: Skill[] = [
+    { name: 'CAN/CAN-FD', level: 95 },
+    { name: 'UDS Protocols', level: 92 },
+    { name: 'ISO 13400', level: 88 },
+    { name: 'TT&C', level: 96 },
+    { name: 'Remote Debug', level: 90 },
+    
+    { name: 'DoIP', level: 94 },
+    { name: 'Python', level: 86 },
+    { name: 'SSH', level: 93 },
+    { name: 'ADAS', level: 85 },
+    { name: 'HV/LV Systems', level: 89 },
+    
+    { name: 'Leadership', level: 97 },
+    { name: 'AutoCAD/CATIA', level: 94 },
+    { name: 'Training', level: 96 },
+    { name: 'Repair Planning', level: 91 },
+    { name: 'React.js', level: 93 }
+  ]
+
+  return (
+    <div className="grid grid-cols-5 gap-4 max-w-4xl mx-auto">
+      {skills.map((skill, index) => (
+        <div key={index} className="relative group">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
+          <div className="relative p-4 bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-lg text-center">
+            <h3 className="text-sm font-bold text-white mb-2">{skill.name}</h3>
+            <div className="w-full bg-zinc-700 rounded-full h-2 mb-2">
+              <div 
+                className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-1000"
+                style={{ width: `${skill.level}%` }}
+              ></div>
+            </div>
+            <span className="text-xs text-purple-400 font-medium">{skill.level}%</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+// ROI Calculator Component
+function ROICalculator() {
+  const [inputs, setInputs] = useState<ROIInputs>({
+    serviceTeamSize: 25,
+    avgDiagnosticTime: 45,
+    escalationRate: 15,
+    technicianHourlyRate: 75,
+    monthlyVehicleVolume: 500,
+    trainingCostPerTech: 2000,
+    downtimeHours: 12
+  })
+
+  const [results, setResults] = useState<ROIResults>({
+    currentMonthlyCosts: 0,
+    monthlySavings: 0,
+    annualSavings: 0,
+    trainingInvestment: 0,
+    roi: 0,
+    paybackMonths: 0
+  })
+
+  useEffect(() => {
+    const diagnosticTimeSavings = (inputs.monthlyVehicleVolume * inputs.avgDiagnosticTime * 0.4 / 60) * inputs.technicianHourlyRate
+    const escalationSavings = (inputs.monthlyVehicleVolume * inputs.escalationRate / 100 * 2) * inputs.technicianHourlyRate
+    const downtimeSavings = (inputs.downtimeHours * 0.3) * inputs.technicianHourlyRate * inputs.serviceTeamSize
+    
+    const totalMonthlySavings = diagnosticTimeSavings + escalationSavings + downtimeSavings
+    const annualSavings = totalMonthlySavings * 12
+    const trainingInvestment = inputs.serviceTeamSize * inputs.trainingCostPerTech
+    const roi = ((annualSavings - trainingInvestment) / trainingInvestment) * 100
+    const paybackMonths = trainingInvestment / totalMonthlySavings
+
+    setResults({
+      currentMonthlyCosts: inputs.monthlyVehicleVolume * (inputs.avgDiagnosticTime / 60) * inputs.technicianHourlyRate,
+      monthlySavings: totalMonthlySavings,
+      annualSavings: annualSavings,
+      trainingInvestment: trainingInvestment,
+      roi: roi,
+      paybackMonths: paybackMonths
+    })
+  }, [inputs])
+
+  const formatCurrency = (num: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num)
+
+  return (
+    <div className="grid lg:grid-cols-2 gap-8">
+      <div className="relative group">
+        <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
+        <div className="relative p-8 bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-lg">
+          <h3 className="text-xl font-bold text-white mb-6">Input Parameters</h3>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-zinc-300 mb-2">Service Team Size</label>
+              <input
+                type="number"
+                value={inputs.serviceTeamSize}
+                onChange={(e) => setInputs({...inputs, serviceTeamSize: parseInt(e.target.value) || 0})}
+                className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-zinc-300 mb-2">Avg Diagnostic Time (min)</label>
+              <input
+                type="number"
+                value={inputs.avgDiagnosticTime}
+                onChange={(e) => setInputs({...inputs, avgDiagnosticTime: parseInt(e.target.value) || 0})}
+                className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-zinc-300 mb-2">Monthly Vehicle Volume</label>
+              <input
+                type="number"
+                value={inputs.monthlyVehicleVolume}
+                onChange={(e) => setInputs({...inputs, monthlyVehicleVolume: parseInt(e.target.value) || 0})}
+                className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-zinc-300 mb-2">Training Cost per Tech</label>
+              <input
+                type="number"
+                value={inputs.trainingCostPerTech}
+                onChange={(e) => setInputs({...inputs, trainingCostPerTech: parseInt(e.target.value) || 0})}
+                className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-6">
+        <div className="relative group">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
+          <div className="relative p-6 bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-lg">
+            <h3 className="text-lg font-semibold text-white mb-4">Return on Investment</h3>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-zinc-400">Training Investment</span>
+                <span className="font-semibold text-white">
+                  {formatCurrency(results.trainingInvestment)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-zinc-400">Monthly Savings</span>
+                <span className="font-semibold text-green-400">
+                  {formatCurrency(results.monthlySavings)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-zinc-400">Annual Savings</span>
+                <span className="font-semibold text-green-400">
+                  {formatCurrency(results.annualSavings)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center border-t border-zinc-600 pt-3">
+                <span className="text-zinc-300 font-semibold">ROI</span>
+                <span className="font-bold text-green-400 text-lg">
+                  {results.roi.toFixed(1)}%
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-zinc-400">Payback Period</span>
+                <span className="font-semibold text-green-400">
+                  {results.paybackMonths.toFixed(1)} months
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="relative group">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
+          <div className="relative p-6 bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-lg">
+            <h3 className="text-lg font-semibold text-white mb-4">Based on Real Results</h3>
+            <div className="space-y-2 text-sm">
+              <div className="flex items-center gap-2">
+                <CheckCircle size={16} className="text-green-400" />
+                <span className="text-zinc-300">40% reduction in ECU flashing time (Fisker)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle size={16} className="text-green-400" />
+                <span className="text-zinc-300">60% faster remote diagnostics (Rivian)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle size={16} className="text-green-400" />
+                <span className="text-zinc-300">50% reduction in field time (Tesla)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Training Program Component - Mock for other modules
 function MockTrainingProgram() {
   const [currentModule, setCurrentModule] = useState<number>(0)
   const [progress, setProgress] = useState<number>(0)
@@ -780,12 +1640,11 @@ function MockTrainingProgram() {
                 "w-full text-left p-4 rounded-lg border transition-all",
                 currentModule === index 
                   ? "bg-purple-500/20 border-purple-500/50 text-white" 
-                  : "bg-zinc-800/50 border-zinc-700/50 text-zinc-400 hover:text-white hover:border-zinc-600/50"
+                  : "bg-zinc-800/50 border-zinc-700/50 text-zinc-400 hover:text-white"
               )}
             >
-              <h4 className="font-medium mb-2">{module.title}</h4>
-              <p className="text-xs opacity-75 mb-2">{module.description}</p>
-              <div className="text-xs text-purple-400">{module.duration}</div>
+              <div className="font-medium">{module.title}</div>
+              <div className="text-sm opacity-75">{module.duration}</div>
             </button>
           ))}
         </div>
@@ -794,26 +1653,32 @@ function MockTrainingProgram() {
       <div className="lg:col-span-2">
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
-          <div className="relative p-6 bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-lg">
-            <h3 className="text-xl font-bold text-white mb-4">{modules[currentModule].title}</h3>
+          <div className="relative p-8 bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-lg">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-2xl font-bold text-white">{modules[currentModule].title}</h3>
+              <span className="text-sm text-zinc-400 bg-zinc-700/50 px-3 py-1 rounded-full">
+                {modules[currentModule].duration}
+              </span>
+            </div>
+
             <p className="text-zinc-300 mb-6">{modules[currentModule].description}</p>
 
             {/* Progress Bar */}
             <div className="mb-6">
-              <div className="flex justify-between items-center mb-2">
+              <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-zinc-400">Progress</span>
-                <span className="text-sm text-purple-400">{progress}%</span>
+                <span className="text-sm text-zinc-400">{Math.round(progress)}%</span>
               </div>
               <div className="w-full bg-zinc-700 rounded-full h-2">
                 <div 
                   className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-300"
                   style={{ width: `${progress}%` }}
-                />
+                ></div>
               </div>
             </div>
 
             {/* Controls */}
-            <div className="flex gap-4 mb-6">
+            <div className="flex items-center gap-4 mb-6">
               <button
                 onClick={() => setIsPlaying(!isPlaying)}
                 className="flex items-center gap-2 bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg transition-colors"
@@ -851,94 +1716,6 @@ function MockTrainingProgram() {
     </div>
   )
 }
-
-// Projects data
-const projects: Project[] = [
-  {
-    title: 'Fisker Ocean ECU Flashing Tool',
-    company: 'Fisker Inc.',
-    period: '2022-2024',
-    description: 'Led comprehensive software development for Fisker Ocean ECU flashing tool, transforming vehicle service operations.',
-    achievements: [
-      'Reduced ECU flashing time by 40%',
-      'Achieved 99.7% flash success rate across 25+ ECU types',
-      'Saved $850K annually through automation',
-      'Eliminated manual configuration errors',
-      'Reduced service bay time by 2.5 hours per vehicle',
-      'Integrated comprehensive logging and audit trails'
-    ],
-    technologies: ['Python', 'C++', 'CAN/CAN-FD', 'UDS Protocol', 'DoIP', 'Vehicle Networks', 'Diagnostics', 'Automation'],
-    challenges: [
-      'Complex multi-ECU flash sequences requiring precise timing',
-      'Ensuring flash reliability across diverse hardware configurations',
-      'Integrating with existing service workflows and tools',
-      'Managing dependencies between interconnected ECU systems'
-    ],
-    solutions: [
-      'Automated dependency resolution and flash sequencing',
-      'Real-time monitoring and error recovery mechanisms',
-      'Comprehensive validation testing across all vehicle configurations',
-      'Intuitive UI/UX design for service technician efficiency'
-    ],
-    impact: 'Revolutionized Fisker service operations, enabling faster vehicle delivery and significantly improved customer satisfaction through reliable, automated ECU management.'
-  },
-  {
-    title: 'Tesla Remote Diagnostics Platform',
-    company: 'Tesla',
-    period: '2018-2021',
-    description: 'Spearheaded global remote diagnostics engineering for Tesla Model S, 3, X, and Y, revolutionizing automotive service delivery.',
-    achievements: [
-      'Resolved 32,000+ engineering escalations',
-      'Reduced field diagnostic time by 50%',
-      'Saved $3M in buyback investigations',
-      'Reduced incident resolution time by 35%',
-      'Enhanced service readiness across 4 global regions',
-      'Led training programs for service center technicians'
-    ],
-    technologies: ['SSH', 'DoIP', 'Syslog Generation', 'HV Safety Protocols', 'AutoPilot Analysis', 'OTA Management', 'Remote Diagnostics'],
-    challenges: [
-      'Complex EV systems requiring remote troubleshooting',
-      'Global service coordination across multiple time zones',
-      'AutoPilot incident analysis and resolution',
-      'Training technicians on advanced diagnostic procedures'
-    ],
-    solutions: [
-      'Advanced SSH capabilities for remote system access',
-      'Comprehensive log analysis and diagnostic procedures',
-      'Real-time troubleshooting and problem-solving strategies',
-      'Systematic training programs focused on HV safety protocols'
-    ],
-    impact: 'Revolutionized Tesla\'s global service operations with remote diagnostic capabilities, enabling rapid issue resolution and significant cost savings in buyback investigations.'
-  },
-  {
-    title: 'Rivian Cloud Diagnostics Platform',
-    company: 'Rivian',
-    period: '2021-2022',
-    description: 'Designed and implemented RivianOS cloud-based remote diagnostics and repair planning system for next-generation electric adventure vehicles.',
-    achievements: [
-      'Reduced remote diagnostic response time by 60%',
-      'Saved $1.2M annually through tool optimization',
-      'Boosted internal diagnostics software adoption by 45%',
-      'Increased issue resolution rate by 25%',
-      'Created comprehensive training materials',
-      'Delivered KPI-based reports for executive stakeholders'
-    ],
-    technologies: ['Cloud Computing', 'RivianOS', 'Remote Diagnostics', 'Planning Systems', 'KPI Analytics', 'Training Documentation'],
-    challenges: [
-      'Building diagnostics from scratch for new EV platform',
-      'Integrating cloud-based solutions with vehicle systems',
-      'Establishing KPI frameworks for new technology',
-      'Training teams on completely new diagnostic procedures'
-    ],
-    solutions: [
-      'Cloud-native diagnostic architecture for scalability',
-      'Integrated repair planning with diagnostic workflows',
-      'Comprehensive KPI tracking and milestone reporting',
-      'Detailed training materials and technical documentation'
-    ],
-    impact: 'Established foundation for Rivian\'s service operations with innovative cloud-based diagnostics, enabling efficient remote support for adventure vehicles.'
-  }
-]
 
 // Floating Navigation Component
 function FloatingNav() {
@@ -994,116 +1771,377 @@ function FloatingNav() {
   return (
     <div className={cn(
       "fixed top-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-300",
-      isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4 pointer-events-none"
+      isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
     )}>
-      <nav className="bg-zinc-900/80 backdrop-blur-md border border-zinc-700/50 rounded-full px-6 py-3">
-        <div className="flex items-center gap-1">
+      <div className="relative px-4 py-3 rounded-full bg-zinc-800/80 backdrop-blur-md border border-zinc-700/50 shadow-lg max-w-[90vw] overflow-hidden">
+        <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full blur opacity-50"></div>
+        <div className="relative flex items-center gap-1 overflow-x-auto scrollbar-hide">
+          <span className="font-bold text-lg mr-4 flex-shrink-0">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Ahmed</span>
+            <span className="text-white ml-1">Said</span>
+          </span>
           {navItems.map((item) => (
             <a
-              key={item.id}
+              key={item.name}
               href={item.href}
               className={cn(
-                "px-4 py-2 rounded-full text-sm font-medium transition-all duration-200",
-                activeSection === item.id
-                  ? "bg-purple-500 text-white"
-                  : "text-zinc-400 hover:text-white hover:bg-zinc-800"
+                "px-3 py-1 text-sm font-medium transition-all duration-300 rounded-full flex-shrink-0",
+                activeSection === item.id 
+                  ? "text-white bg-purple-500/20 border border-purple-500/30" 
+                  : "text-zinc-400 hover:text-white hover:bg-zinc-700/30"
               )}
             >
               {item.name}
             </a>
           ))}
-          <div className="w-px h-6 bg-zinc-700 mx-2" />
-          <button
+          <button 
             onClick={handleDownload}
-            className="flex items-center gap-2 bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
+            className="ml-2 px-4 py-1 text-sm bg-zinc-700 hover:bg-zinc-600 border border-zinc-600 hover:border-zinc-500 rounded-full text-white font-medium transition-all flex-shrink-0"
           >
-            <Download size={16} />
             Resume
           </button>
         </div>
-      </nav>
+      </div>
     </div>
   )
 }
 
-// Hero Section Component
-function HeroSection() {
-  return (
-    <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      {/* Background Effects */}
+export default function Portfolio() {
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+
+  const achievements: Achievement[] = [
+    { value: '$6.2M+', label: 'Cost Savings Generated', icon: DollarSign },
+    { value: '300+', label: 'Professionals Trained', icon: Users },
+    { value: '32K+', label: 'Engineering Escalations Resolved', icon: Code },
+    { value: '20+', label: 'Years Multi-Domain Experience', icon: Award },
+    { value: '4', label: 'Global Regions Served', icon: Globe },
+    { value: '99.99%', label: 'Satellite Uptime Maintained', icon: Zap }
+  ]
+
+  const projects: Project[] = [
+    {
+      title: 'Fisker Aftersales Service Tool (FAST)',
+      company: 'Fisker',
+      period: '2022-2024',
+      description: 'Revolutionary diagnostic platform that became the backbone of Fisker\'s service operations. Comprehensive UI/UX design for vehicle communication via CAN/CAN-FD/LIN & UDS protocols.',
+      achievements: [
+        'Reduced ECU flashing time by 40% (from 60 to 35 minutes)',
+        'Increased diagnostic efficiency by 35%',
+        'Saved $2M in supplier costs through RFI/RFP optimization',
+        'Trained 150+ engineers and senior architects globally',
+        'Improved software release cycle efficiency by 50%',
+        'Led team of 6 direct reports globally'
+      ],
+      technologies: ['CAN/CAN-FD', 'LIN', 'UDS', 'OBD', 'VCI Integration', 'Azure Directory', 'UI/UX Design', 'IoT Controls', 'ADAS Calibration', 'CANoe Suite', 'Vehicle Spy', 'JIRA', 'Agile'],
+      challenges: [
+        'Cross-cultural team management (India & EU)',
+        'Complex multi-protocol vehicle communication',
+        'Real-time diagnostic data processing',
+        'Supplier integration and cost optimization',
+        'Integration of pre-delivery and post-delivery service strategies'
+      ],
+      solutions: [
+        'Designed intuitive UI mockups for service diagnostic tool',
+        'Implemented vehicle overview capability within 60 seconds',
+        'Created full-scale DTC scan with architecture display',
+        'Developed intelligent ECU flashing sequence methodology',
+        'Advanced IO controls and calibration routines including ADAS'
+      ],
+      impact: 'Revolutionary diagnostic tool that transformed Fisker\'s service operations with industry-leading efficiency gains',
+      hasDemo: true
+    },
+    {
+      title: 'Tesla Remote Diagnostics System',
+      company: 'Tesla',
+      period: '2018-2021',
+      description: 'Built world-class remote diagnostic strategies for global service centers covering ADAS, HV/LV systems, infotainment, and body/chassis systems.',
+      achievements: [
+        'Resolved 32,000+ engineering escalations',
+        'Reduced field diagnostic time by 50%',
+        'Saved $3M in buyback investigations',
+        'Reduced incident resolution time by 35%',
+        'Enhanced service readiness across 4 global regions',
+        'Led training programs for service center technicians'
+      ],
+      technologies: ['SSH', 'DoIP', 'Syslog Generation', 'HV Safety Protocols', 'AutoPilot Analysis', 'OTA Management', 'Remote Diagnostics'],
+      challenges: [
+        'Complex EV systems requiring remote troubleshooting',
+        'Global service coordination across multiple time zones',
+        'AutoPilot incident analysis and resolution',
+        'Training technicians on advanced diagnostic procedures'
+      ],
+      solutions: [
+        'Advanced SSH capabilities for remote system access',
+        'Comprehensive log analysis and diagnostic procedures',
+        'Real-time troubleshooting and problem-solving strategies',
+        'Systematic training programs focused on HV safety protocols'
+      ],
+      impact: 'Revolutionized Tesla\'s global service operations with remote diagnostic capabilities, enabling rapid issue resolution and significant cost savings in buyback investigations.'
+    },
+    {
+      title: 'Rivian Cloud Diagnostics Platform',
+      company: 'Rivian',
+      period: '2021-2022',
+      description: 'Designed and implemented RivianOS cloud-based remote diagnostics and repair planning system for next-generation electric adventure vehicles.',
+      achievements: [
+        'Reduced remote diagnostic response time by 60%',
+        'Saved $1.2M annually through tool optimization',
+        'Boosted internal diagnostics software adoption by 45%',
+        'Increased issue resolution rate by 25%',
+        'Created comprehensive training materials',
+        'Delivered KPI-based reports for executive stakeholders'
+      ],
+      technologies: ['Cloud Computing', 'RivianOS', 'Remote Diagnostics', 'Planning Systems', 'KPI Analytics', 'Training Documentation'],
+      challenges: [
+        'Building diagnostics from scratch for new EV platform',
+        'Integrating cloud-based solutions with vehicle systems',
+        'Establish diagnostics stations with mechanical, electrical, and software tools',
+        'Create lab checklists for daily, weekly, monthly maintenance',
+        'Deploy CRM workflow management system with incident reporting',
+        'Knowledge base framework with troubleshooting procedures',
+        'Regional OTA rollout strategy development'
+      ]
+    },
+    year2: {
+      title: 'Year 2: Advanced Remote Capabilities',
+      description: 'Tier 2 (Advanced Technicians) trained for remote diagnostics and complex issue resolution',
+      details: [
+        'Humanoid robots execute onboard customer training programs',
+        'Self-Service Portal for customers to log requests and track status',
+        'Threshold alerts trigger automated diagnostics reporting',
+        'Integration of lab-setting remote diagnostics into production systems',
+        'Predictive analytics for proactive service intervention'
+      ]
+    },
+    year3: {
+      title: 'Year 3: Autonomous Service Operations',
+      description: 'Tier 1 (Basic Support) with self-service portals and automated resolution',
+      details: [
+        'ML models deployed for self-diagnosis and resolution of non-HW defects',
+        'Humanoid robots conduct automated CSAT and NPS surveys',
+        'Real-time CRM integration with Robot Identification Number (RIN) tracking',
+        'Hardware engineering refinement using 3 years of predictive failure data',
+        'Flying Doctors deployment for global service coverage'
+      ]
+    }
+  },
+  
+  kpiFramework: {
+    reliability: [
+      'Mean Time Between Failures (MTBF)',
+      'Mean Time to Repair (MTTR)',
+      'Predictive Failure & Maintenance Accuracy Rates',
+      'Average Fleet Uptime (Target: 99.5%+)'
+    ],
+    scalability: [
+      'Fleet Health Grading',
+      'Service Request Rate',
+      'Remote Diagnostics Response Time',
+      'Service & Repair Response Time'
+    ],
+    customerExperience: [
+      'Customer Satisfaction (CSAT)',
+      'Net Promoter Score (NPS)',
+      'First Repair Resolution Rate',
+      'Support Ticket Resolution Rate'
+    ],
+    financial: [
+      'Service Cost per Unit',
+      'Warranty Claim per Unit Sold',
+      'Cost of Ownership per Unit',
+      'ROI on Predictive Maintenance Investment'
+    ]
+  },
+
+  technologies: [
+    'ML/AI Algorithms for Predictive Failure Analysis',
+    'IoT Sensors for Continuous Performance Monitoring', 
+    'Cloud Platforms (AWS) for Real-time Data Processing',
+    'CRM Systems with JIRA Integration',
+    'Predictive Analytics and Dashboard Development',
+    'Robot Identification Number (RIN) Tracking System',
+    'OTA Update Management with Regional Compliance',
+    'Remote Diagnostics with Python-enabled SSH Access'
+  ],
+  challenges: [
+    'Defining service requirements for emerging humanoid robotics technology',
+    'Balancing automation with human intervention across 3-tier support',
+    'Creating scalable support infrastructure for global deployment',
+    'Establishing measurable success metrics for unprecedented technology',
+    'Regional compliance and homologation for OTA updates',
+    'Cross-functional collaboration between service and engineering teams'
+  ],
+  solutions: [
+    'Phased 3-year implementation with clear tier progression',
+    'ML-powered predictive maintenance preventing 80% of failures',
+    'Semi-automated feedback loops with intelligent ticket creation',
+    'Regional service partner certification for global coverage',
+    'Continuous data collection for service strategy refinement',
+    'Bi-weekly organization-wide collaboration sessions'
+  ],
+  impact: 'Strategic roadmap positioning humanoid robotics service engineering at the forefront of the $66B market, with framework adaptable across robotics, automotive, and IoT industries.'
+},
+{
+  title: 'Bentley APAC Product Support Planning',
+  company: 'Bentley Motors APAC',
+  period: '2024',
+  description: 'Comprehensive technical service workflow transformation for Bentley APAC, implementing pre-delivery engineering diagnostics, post-delivery service strategy, and cost reduction methodologies for luxury automotive operations.',
+  achievements: [
+    'Implemented pre-delivery engineering level diagnostics framework',
+    'Developed post-delivery service strategy and execution procedures',
+    'Created cost reduction methodologies for luxury vehicle operations',
+    'Established product support management workflows and processes',
+    'Designed systematic issue prioritization based on impact and brand reputation',
+    'Implemented cross-functional collaboration protocols'
+  ],
+  technologies: [
+    'Diagnostic Systems',
+    'Process Management', 
+    'Cost Analysis Tools',
+    'Quality Control Systems',
+    'Workflow Automation',
+    'Performance Analytics'
+  ],
+  challenges: [
+    'Complex luxury vehicle systems requiring specialized diagnostics',
+    'Brand reputation impact considerations for high-end market',
+    'Integration of pre-delivery and post-delivery service strategies',
+    'Cost optimization while maintaining luxury service standards',
+    'Cross-functional team coordination across APAC region',
+    'Establishing measurable quality and efficiency metrics'
+  ],
+  solutions: [
+    'Systematic pre-delivery diagnostic protocols ensuring quality standards',
+    'Integrated service strategy covering entire vehicle lifecycle',
+    'Cost reduction methodologies preserving luxury experience',
+    'Streamlined workflows optimizing operational efficiency',
+    'Cross-functional collaboration frameworks for seamless execution',
+    'Performance tracking and continuous improvement processes'
+  ],
+  impact: 'Transformed Bentley APAC product support operations with comprehensive management procedures, enhancing quality assurance and operational efficiency for luxury automotive market'
+}
+]
+
+const openProjectModal = (project: Project) => {
+  setSelectedProject(project)
+  setIsModalOpen(true)
+}
+
+const closeProjectModal = () => {
+  setIsModalOpen(false)
+  setSelectedProject(null)
+}
+
+return (
+  <div className="min-h-screen bg-gradient-to-b from-zinc-900 via-zinc-900 to-black text-white overflow-hidden">
+    <FloatingNav />
+    
+    {/* Hero Section */}
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 z-0">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-pulse"></div>
-        <div className="absolute top-3/4 right-1/4 w-64 h-64 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-pulse delay-1000"></div>
-        <div className="absolute bottom-1/4 left-1/3 w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-pulse delay-2000"></div>
+        <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute top-40 right-10 w-72 h-72 bg-yellow-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute bottom-20 left-1/3 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
       </div>
 
-      <div className="container mx-auto px-6 text-center relative z-10">
-        <div className="mb-8">
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-4 leading-tight">
-            Ahmed Said
+      <div className="container mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="space-y-6">
+          <div className="inline-block">
+            <div className="relative px-3 py-1 text-sm font-medium rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-4">
+              <span className="relative z-10">Multi-Domain Engineering Expert</span>
+              <span className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 animate-pulse"></span>
+            </div>
+          </div>
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
+            <span className="block text-white">Hi, I'm</span>
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
+              Ahmed Said
+            </span>
           </h1>
-          <p className="text-xl md:text-2xl text-zinc-400 mb-6 max-w-3xl mx-auto">
-            Senior Engineering Leader specializing in EV diagnostics, remote troubleshooting, and next-generation automotive technologies
+          <p className="text-xl text-zinc-400 max-w-[600px]">
+            A seasoned engineering leader with two decades of cross-industry expertise, bridging the gap between cutting-edge technology and practical solutions. 
+            From telecommunications infrastructure to revolutionary electric vehicles and next-generation robotics, I transform complex challenges into streamlined operations.
           </p>
-          <div className="flex flex-wrap justify-center gap-3 mb-8">
-            <span className="bg-zinc-800/50 border border-zinc-700/50 px-4 py-2 rounded-full text-sm text-zinc-300">
-              20+ Years Experience
-            </span>
-            <span className="bg-zinc-800/50 border border-zinc-700/50 px-4 py-2 rounded-full text-sm text-zinc-300">
-              EV Diagnostics Expert
-            </span>
-            <span className="bg-zinc-800/50 border border-zinc-700/50 px-4 py-2 rounded-full text-sm text-zinc-300">
-              Remote Troubleshooting
-            </span>
+          <div className="text-lg text-zinc-500 space-y-2">
+            <p>🚗 <strong>Automotive Pioneer:</strong> Led diagnostic innovation at Tesla, Rivian, and Fisker</p>
+            <p>🛰️ <strong>Global Communications:</strong> Maintained 99.99% uptime across 66 satellites at Iridium</p>
+            <p>📡 <strong>Network Architect:</strong> Optimized 500+ cell sites during 9 years at Verizon</p>
+            <p>🤖 <strong>Future Tech:</strong> Designing service strategies for humanoid robotics</p>
+          </div>
+          <div className="flex gap-4">
+            <a 
+              href="#projects"
+              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-pink-500 hover:to-purple-500 text-white px-8 py-3 rounded-full font-medium flex items-center gap-2 transition-all"
+            >
+              View Projects <ArrowRight size={20} />
+            </a>
+            <button 
+              onClick={() => {
+                const link = document.createElement('a')
+                link.href = '/ASCV25.pdf'
+                link.download = 'Ahmed_Said_Resume.pdf'
+                link.setAttribute('type', 'application/pdf')
+                document.body.appendChild(link)
+                link.click()
+                document.body.removeChild(link)
+              }}
+              className="border border-zinc-700 hover:border-purple-500 text-white px-8 py-3 rounded-full font-medium flex items-center gap-2 transition-all"
+            >
+              <Download size={20} /> Resume
+            </button>
+          </div>
+          <div className="flex gap-4 pt-4">
+            <a href="mailto:ahmed.osaid.pro@gmail.com" className="text-zinc-400 hover:text-purple-400 transition-colors">
+              <Mail size={24} />
+            </a>
+            <a href="https://www.linkedin.com/in/ahmedosaid/" className="text-zinc-400 hover:text-purple-400 transition-colors">
+              <Linkedin size={24} />
+            </a>
+            <a href="tel:+16024022505" className="text-zinc-400 hover:text-purple-400 transition-colors">
+              <Phone size={24} />
+            </a>
           </div>
         </div>
-
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <a 
-            href="#projects"
-            className="bg-purple-500 hover:bg-purple-600 text-white px-8 py-4 rounded-lg font-medium transition-colors flex items-center gap-2"
-          >
-            View My Work
-            <ChevronDown className="w-5 h-5" />
-          </a>
-          <a
-            href="#contact"
-            className="border border-zinc-600 hover:border-zinc-500 text-white px-8 py-4 rounded-lg font-medium transition-colors"
-          >
-            Get In Touch
-          </a>
-        </div>
-
-        {/* Quick Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 max-w-3xl mx-auto">
-          <div className="text-center">
-            <div className="text-2xl md:text-3xl font-bold text-purple-400 mb-1">32K+</div>
-            <div className="text-sm text-zinc-400">Issues Resolved</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl md:text-3xl font-bold text-pink-400 mb-1">$5M+</div>
-            <div className="text-sm text-zinc-400">Cost Savings</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl md:text-3xl font-bold text-blue-400 mb-1">50%</div>
-            <div className="text-sm text-zinc-400">Time Reduction</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl md:text-3xl font-bold text-green-400 mb-1">4</div>
-            <div className="text-sm text-zinc-400">Global Regions</div>
+        
+        <div className="relative">
+          <div className="w-full h-[400px] relative group">
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-3xl backdrop-blur-sm border border-white/10 group-hover:from-purple-500/30 group-hover:to-pink-500/30 transition-all duration-500"></div>
+            <div className="absolute inset-4 bg-zinc-900/50 rounded-2xl flex items-center justify-center">
+              <div className="text-center">
+                <div className="text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600 mb-4 animate-pulse">
+                  20+
+                </div>
+                <div className="text-white font-medium text-xl">Years Experience</div>
+                <div className="text-zinc-400 text-sm mt-2">Tesla • Rivian • Fisker • Iridium • Verizon</div>
+                <div className="grid grid-cols-3 gap-4 mt-6 text-center">
+                  <div>
+                    <div className="text-purple-400 font-bold text-lg">$6.2M+</div>
+                    <div className="text-zinc-500 text-xs">Saved</div>
+                  </div>
+                  <div>
+                    <div className="text-pink-400 font-bold text-lg">300+</div>
+                    <div className="text-zinc-500 text-xs">Trained</div>
+                  </div>
+                  <div>
+                    <div className="text-purple-400 font-bold text-lg">32K+</div>
+                    <div className="text-zinc-500 text-xs">Resolved</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="absolute top-10 right-10 w-4 h-4 bg-purple-400 rounded-full animate-bounce"></div>
+            <div className="absolute bottom-20 left-10 w-3 h-3 bg-pink-400 rounded-full animate-bounce animation-delay-2000"></div>
+            <div className="absolute top-1/2 left-1/4 w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
           </div>
         </div>
       </div>
     </section>
-  )
-}
 
-// About Section Component  
-function AboutSection() {
-  return (
+    {/* About Section */}
     <section id="about" className="py-32 relative">
       <div className="absolute inset-0 z-0">
-        <div className="absolute top-1/3 right-1/4 w-64 h-64 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
+        <div className="absolute top-1/4 right-1/3 w-64 h-64 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
       </div>
       
       <div className="container mx-auto px-6 relative z-10">
@@ -1111,534 +2149,154 @@ function AboutSection() {
           <h2 className="text-4xl md:text-6xl font-bold text-white mb-4">
             Engineering <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Excellence</span>
           </h2>
-          <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
-            Two decades of transformative engineering leadership in automotive diagnostics and cutting-edge technology solutions that redefine our connected world
+          <p className="text-xl text-zinc-400 max-w-3xl mx-auto">
+            What drives me is the intersection of human ingenuity and technological possibility. Throughout my career, I've learned that the most complex engineering challenges are often solved not by the most sophisticated algorithms, but by deeply understanding the human element.
           </p>
         </div>
-        
-        <div className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
-          <div className="space-y-6">
-            <p className="text-lg text-zinc-300 leading-relaxed">
-              With over 20 years of engineering expertise, I've led transformative projects at industry giants like Tesla, Rivian, and Fisker, revolutionizing how we approach electric vehicle diagnostics and service operations.
-            </p>
-            <p className="text-lg text-zinc-300 leading-relaxed">
-              My passion lies in solving complex technical challenges through innovative remote diagnostic solutions, advanced training programs, and process optimization that delivers measurable impact to both teams and bottom lines.
-            </p>
-            <div className="grid grid-cols-2 gap-6 pt-6">
-              <div>
-                <h4 className="text-purple-400 font-semibold mb-2">Core Expertise</h4>
-                <ul className="text-zinc-300 space-y-1 text-sm">
-                  <li>• EV Diagnostics & Troubleshooting</li>
-                  <li>• Remote Engineering Solutions</li>
-                  <li>• Process Optimization</li>
-                  <li>• Team Leadership & Training</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="text-pink-400 font-semibold mb-2">Industries</h4>
-                <ul className="text-zinc-300 space-y-1 text-sm">
-                  <li>• Electric Vehicles</li>
-                  <li>• Automotive Technology</li>
-                  <li>• Satellite Communications</li>
-                  <li>• Wireless Networks</li>
-                </ul>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {achievements.map((achievement, index) => (
+            <div key={index} className="relative group">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
+              <div className="relative p-6 bg-zinc-900/80 backdrop-blur-sm border border-zinc-700/50 rounded-lg">
+                <achievement.icon className="w-8 h-8 text-purple-400 mb-4" />
+                <h3 className="text-2xl font-bold text-white mb-2">{achievement.value}</h3>
+                <p className="text-zinc-400 text-sm">{achievement.label}</p>
               </div>
             </div>
-          </div>
-          
-          <div className="relative">
-            <div className="absolute -inset-4 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg blur-lg"></div>
-            <div className="relative bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-lg p-8">
-              <h3 className="text-xl font-bold text-white mb-6">Impact Metrics</h3>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-zinc-300">Engineering Escalations Resolved</span>
-                  <span className="font-bold text-purple-400">32,000+</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-zinc-300">Annual Cost Savings Generated</span>
-                  <span className="font-bold text-green-400">$5M+</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-zinc-300">Process Efficiency Improvement</span>
-                  <span className="font-bold text-blue-400">50%</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-zinc-300">Global Regions Supported</span>
-                  <span className="font-bold text-pink-400">4</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </section>
-  )
-}
 
-// Project Card Component
-function ProjectCard({ project, onClick }: { project: Project, onClick: () => void }) {
-  const [isHovered, setIsHovered] = useState(false)
-  
-  return (
-    <div 
-      className="relative group cursor-pointer"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onClick={onClick}
-    >
-      <div className={cn(
-        "absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg blur transition-all duration-300",
-        isHovered ? "opacity-100 scale-105" : "opacity-75"
-      )}></div>
+    {/* Experience Timeline */}
+    <section id="experience" className="py-32 relative">
+      <div className="absolute inset-0 z-0">
+        <div className="absolute bottom-1/4 left-1/4 w-64 h-64 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
+      </div>
       
-      <div className={cn(
-        "relative p-6 bg-zinc-900/80 backdrop-blur-sm border border-zinc-700/50 rounded-lg h-full transition-all duration-300",
-        isHovered ? "transform -translate-y-2 shadow-2xl" : ""
-      )}>
-        {/* Header */}
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex-1">
-            <h3 className="text-xl font-bold text-white mb-2 group-hover:text-purple-400 transition-colors">
-              {project.title}
-            </h3>
-            <div className="flex items-center gap-3 mb-2">
-              <span className="text-sm text-purple-400 bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/20">
-                {project.company}
-              </span>
-              <span className="text-xs text-zinc-500">{project.period}</span>
-            </div>
-          </div>
-          
-          <div className={cn(
-            "p-2 rounded-lg transition-all duration-300",
-            isHovered ? "bg-purple-500/20 text-purple-400" : "bg-zinc-800 text-zinc-400"
-          )}>
-            <ExternalLink size={20} />
-          </div>
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-6xl font-bold text-white mb-4">
+            Career <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Journey</span>
+          </h2>
+          <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
+            Two decades of engineering leadership across industries that define our connected world
+          </p>
         </div>
-
-        {/* Description */}
-        <p className="text-zinc-300 text-sm mb-4 line-clamp-3">
-          {project.description}
-        </p>
-
-        {/* Key Achievement */}
-        <div className="mb-4">
-          <div className="text-xs text-zinc-500 mb-1">Key Achievement</div>
-          <div className="text-sm text-green-400 font-medium">
-            {project.achievements[0]}
-          </div>
-        </div>
-
-        {/* Technologies */}
-        <div className="mb-4">
-          <div className="text-xs text-zinc-500 mb-2">Technologies</div>
-          <div className="flex flex-wrap gap-1">
-            {project.technologies.slice(0, 4).map((tech, techIndex) => (
-              <span 
-                key={techIndex}
-                className="text-xs bg-zinc-800 text-zinc-300 px-2 py-1 rounded border border-zinc-700"
-              >
-                {tech}
-              </span>
-            ))}
-            {project.technologies.length > 4 && (
-              <span className="text-xs text-zinc-500 px-2 py-1">
-                +{project.technologies.length - 4} more
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Impact */}
-        <div className="text-xs text-zinc-400 italic line-clamp-2">
-          {project.impact}
-        </div>
+        
+        <VerticalTimeline />
       </div>
-    </div>
-  )
-}
+    </section>
 
-// Project Modal Component
-function ProjectModal({ project, isOpen, onClose }: { project: Project | null, isOpen: boolean, onClose: () => void }) {
-  if (!project || !isOpen) return null
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose}></div>
-      <div className="relative bg-zinc-900 border border-zinc-700 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="p-8">
-          {/* Header */}
-          <div className="flex items-start justify-between mb-6">
-            <div>
-              <h2 className="text-3xl font-bold text-white mb-2">{project.title}</h2>
-              <div className="flex items-center gap-4">
-                <span className="text-purple-400 bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/20">
-                  {project.company}
-                </span>
-                <span className="text-zinc-400">{project.period}</span>
-              </div>
-            </div>
-            <button
-              onClick={onClose}
-              className="text-zinc-400 hover:text-white transition-colors"
-            >
-              ✕
-            </button>
-          </div>
-
-          {/* Description */}
-          <p className="text-zinc-300 text-lg mb-8">{project.description}</p>
-
-          {/* Grid Layout */}
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Achievements */}
-            <div>
-              <h3 className="text-xl font-bold text-white mb-4">Key Achievements</h3>
-              <div className="space-y-3">
-                {project.achievements.map((achievement, index) => (
-                  <div key={index} className="flex items-start gap-3">
-                    <CheckCircle size={16} className="text-green-400 mt-1 flex-shrink-0" />
-                    <span className="text-zinc-300">{achievement}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Challenges & Solutions */}
-            <div className="space-y-6">
-              <div>
-                <h3 className="text-xl font-bold text-white mb-4">Challenges</h3>
-                <div className="space-y-3">
-                  {project.challenges.map((challenge, index) => (
-                    <div key={index} className="flex items-start gap-3">
-                      <AlertTriangle size={16} className="text-yellow-400 mt-1 flex-shrink-0" />
-                      <span className="text-zinc-300">{challenge}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-xl font-bold text-white mb-4">Solutions</h3>
-                <div className="space-y-3">
-                  {project.solutions.map((solution, index) => (
-                    <div key={index} className="flex items-start gap-3">
-                      <Zap size={16} className="text-blue-400 mt-1 flex-shrink-0" />
-                      <span className="text-zinc-300">{solution}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Technologies */}
-          <div className="mt-8">
-            <h3 className="text-xl font-bold text-white mb-4">Technologies Used</h3>
-            <div className="flex flex-wrap gap-3">
-              {project.technologies.map((tech, index) => (
-                <span 
-                  key={index}
-                  className="bg-zinc-800 text-zinc-300 px-3 py-2 rounded border border-zinc-700"
-                >
-                  {tech}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Impact */}
-          <div className="mt-8 p-6 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-lg border border-purple-500/20">
-            <h3 className="text-xl font-bold text-white mb-3">Impact</h3>
-            <p className="text-zinc-300 italic">{project.impact}</p>
-          </div>
-        </div>
+    {/* Enhanced Projects Section */}
+    <section id="projects" className="py-32 relative">
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-1/3 left-1/3 w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
       </div>
-    </div>
-  )
-}
-
-// Timeline Component
-function VerticalTimeline() {
-  const timelineData = [
-    {
-      period: '2022 - 2024',
-      title: 'Senior Diagnostics Engineer',
-      company: 'Fisker Inc.',
-      description: 'Led comprehensive software development for Fisker Ocean ECU flashing tool, achieving 40% reduction in flashing time and 99.7% success rate.',
-      highlights: ['$850K annual savings', '25+ ECU types supported', 'Zero manual errors']
-    },
-    {
-      period: '2021 - 2022', 
-      title: 'Senior Engineering Manager',
-      company: 'Rivian',
-      description: 'Designed RivianOS cloud-based diagnostics platform, reducing response time by 60% and saving $1.2M annually.',
-      highlights: ['Cloud-native architecture', '45% adoption increase', 'Executive KPI reporting']
-    },
-    {
-      period: '2018 - 2021',
-      title: 'Lead Field Remote Diagnostics Engineer',
-      company: 'Tesla',
-      description: 'Spearheaded global remote diagnostics for Model S/3/X/Y, resolving 32,000+ escalations and saving $3M in buyback investigations.',
-      highlights: ['4 global regions', '50% time reduction', 'HV safety protocols']
-    },
-    {
-      period: '2014 - 2016',
-      title: 'Product Support Engineer',
-      company: 'Iridium Communications',
-      description: 'Ensured 99.99% satellite uptime managing 66 LEO satellites, optimizing global commercial and government communications.',
-      highlights: ['Global satellite network', '40% reliability increase', 'Commercial & gov clients']
-    }
-  ]
-
-  return (
-    <div className="relative">
-      {/* Timeline line */}
-      <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-purple-500 via-pink-500 to-blue-500"></div>
       
-      <div className="space-y-12">
-        {timelineData.map((item, index) => (
-          <div key={index} className={cn(
-            "relative flex items-center",
-            index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
-          )}>
-            {/* Timeline dot */}
-            <div className="absolute left-4 md:left-1/2 w-4 h-4 bg-purple-500 rounded-full border-4 border-zinc-900 transform -translate-x-1/2 z-10"></div>
-            
-            {/* Content */}
-            <div className={cn(
-              "ml-12 md:ml-0 md:w-1/2",
-              index % 2 === 0 ? "md:pr-12" : "md:pl-12"
-            )}>
-              <div className="relative group">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
-                <div className="relative p-6 bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-lg">
-                  <div className="text-sm text-purple-400 mb-2">{item.period}</div>
-                  <h3 className="text-xl font-bold text-white mb-1">{item.title}</h3>
-                  <div className="text-lg text-zinc-300 mb-3">{item.company}</div>
-                  <p className="text-zinc-400 mb-4">{item.description}</p>
-                  <div className="space-y-2">
-                    {item.highlights.map((highlight, highlightIndex) => (
-                      <div key={highlightIndex} className={cn(
-                        "flex items-center gap-2 text-sm",
-                        index % 2 === 0 ? "justify-start" : "md:justify-end md:flex-row-reverse"
-                      )}>
-                        <ChevronRight size={12} className="text-purple-400 mt-1 flex-shrink-0" />
-                        {highlight}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// Skills Grid Component
-function SkillsGrid() {
-  const skills: Skill[] = [
-    { name: 'CAN/CAN-FD', level: 95 },
-    { name: 'UDS Protocols', level: 92 },
-    { name: 'ISO 13400', level: 88 },
-    { name: 'TT&C', level: 96 },
-    { name: 'Remote Debug', level: 90 },
-    
-    { name: 'DoIP', level: 94 },
-    { name: 'Python', level: 86 },
-    { name: 'SSH', level: 93 },
-    { name: 'ADAS', level: 85 },
-    { name: 'HV/LV Systems', level: 89 },
-    
-    { name: 'Leadership', level: 97 },
-    { name: 'AutoCAD/CATIA', level: 94 },
-    { name: 'Training', level: 96 },
-    { name: 'Repair Planning', level: 91 },
-    { name: 'React.js', level: 93 }
-  ]
-
-  return (
-    <div className="grid grid-cols-5 gap-4 max-w-4xl mx-auto">
-      {skills.map((skill, index) => (
-        <div key={index} className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
-          <div className="relative p-4 bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-lg text-center">
-            <h3 className="text-sm font-bold text-white mb-2">{skill.name}</h3>
-            <div className="w-full bg-zinc-700 rounded-full h-2 mb-2">
-              <div 
-                className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-1000"
-                style={{ width: `${skill.level}%` }}
-              ></div>
-            </div>
-            <span className="text-xs text-purple-400 font-medium">{skill.level}%</span>
-          </div>
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-6xl font-bold text-white mb-4">
+            Featured <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Projects</span>
+          </h2>
+          <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
+            Breakthrough engineering solutions that transformed operations and delivered measurable impact
+          </p>
         </div>
-      ))}
-    </div>
-  )
-}
-
-// ROI Calculator Component
-function ROICalculator() {
-  const [inputs, setInputs] = useState({
-    technicians: 50,
-    hourlyRate: 85,
-    hoursPerDay: 8,
-    diagnosticTime: 2,
-    trainingCost: 25000,
-    efficiencyGain: 40
-  })
-
-  const calculateROI = () => {
-    const dailyDiagnosticHours = inputs.technicians * inputs.diagnosticTime
-    const timeSaved = dailyDiagnosticHours * (inputs.efficiencyGain / 100)
-    const dailySavings = timeSaved * inputs.hourlyRate
-    const annualSavings = dailySavings * 250 // 250 working days
-    const roi = ((annualSavings - inputs.trainingCost) / inputs.trainingCost) * 100
-    const paybackMonths = (inputs.trainingCost / (dailySavings * 21.67)) // 21.67 working days per month
-    
-    return {
-      dailySavings,
-      annualSavings,
-      roi: Math.max(roi, 0),
-      paybackMonths: Math.max(paybackMonths, 0)
-    }
-  }
-
-  const results = calculateROI()
-
-  return (
-    <div className="grid lg:grid-cols-2 gap-8">
-      <div className="space-y-6">
-        <div className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
-          <div className="relative p-6 bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-lg">
-            <h3 className="text-lg font-semibold text-white mb-4">Training Investment Calculator</h3>
-            
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm text-zinc-400 mb-2">Number of Technicians</label>
-                <input
-                  type="number"
-                  value={inputs.technicians}
-                  onChange={(e) => setInputs({...inputs, technicians: parseInt(e.target.value) || 0})}
-                  className="w-full bg-zinc-700 border border-zinc-600 rounded-lg px-4 py-2 text-white"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm text-zinc-400 mb-2">Hourly Rate ($)</label>
-                <input
-                  type="number"
-                  value={inputs.hourlyRate}
-                  onChange={(e) => setInputs({...inputs, hourlyRate: parseInt(e.target.value) || 0})}
-                  className="w-full bg-zinc-700 border border-zinc-600 rounded-lg px-4 py-2 text-white"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm text-zinc-400 mb-2">Diagnostic Time per Day (hours)</label>
-                <input
-                  type="number"
-                  step="0.5"
-                  value={inputs.diagnosticTime}
-                  onChange={(e) => setInputs({...inputs, diagnosticTime: parseFloat(e.target.value) || 0})}
-                  className="w-full bg-zinc-700 border border-zinc-600 rounded-lg px-4 py-2 text-white"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm text-zinc-400 mb-2">Training Investment ($)</label>
-                <input
-                  type="number"
-                  value={inputs.trainingCost}
-                  onChange={(e) => setInputs({...inputs, trainingCost: parseInt(e.target.value) || 0})}
-                  className="w-full bg-zinc-700 border border-zinc-600 rounded-lg px-4 py-2 text-white"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm text-zinc-400 mb-2">Expected Efficiency Gain (%)</label>
-                <input
-                  type="number"
-                  value={inputs.efficiencyGain}
-                  onChange={(e) => setInputs({...inputs, efficiencyGain: parseInt(e.target.value) || 0})}
-                  className="w-full bg-zinc-700 border border-zinc-600 rounded-lg px-4 py-2 text-white"
-                />
-              </div>
-            </div>
-          </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {projects.map((project, index) => (
+            <ProjectCard 
+              key={index} 
+              project={project}
+              onClick={() => openProjectModal(project)}
+            />
+          ))}
         </div>
       </div>
+    </section>
 
-      <div className="space-y-6">
-        <div className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-green-500/20 to-blue-500/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
-          <div className="relative p-6 bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-lg">
-            <h3 className="text-lg font-semibold text-white mb-4">Projected Results</h3>
-            
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="text-zinc-300">Daily Savings</span>
-                <span className="font-bold text-green-400 text-xl">
-                  ${results.dailySavings.toLocaleString()}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-zinc-300">Annual Savings</span>
-                <span className="font-bold text-green-400 text-xl">
-                  ${results.annualSavings.toLocaleString()}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-zinc-300 font-semibold">ROI</span>
-                <span className="font-bold text-green-400 text-lg">
-                  {results.roi.toFixed(1)}%
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-zinc-400">Payback Period</span>
-                <span className="font-semibold text-green-400">
-                  {results.paybackMonths.toFixed(1)} months
-                </span>
-              </div>
-            </div>
-          </div>
+    {/* Project Modal */}
+    <ProjectModal 
+      project={selectedProject}
+      isOpen={isModalOpen}
+      onClose={closeProjectModal}
+    />
+
+    {/* Skills Section */}
+    <section id="skills" className="py-32 relative">
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-6xl font-bold text-white mb-4">
+            Technical <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Expertise</span>
+          </h2>
+          <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
+            Core competencies refined through 20+ years of hands-on engineering
+          </p>
         </div>
+        
+        <SkillsGrid />
+      </div>
+    </section>
 
-        <div className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
-          <div className="relative p-6 bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-lg">
-            <h3 className="text-lg font-semibold text-white mb-4">Based on Real Results</h3>
-            <div className="space-y-2 text-sm">
-              <div className="flex items-center gap-2">
-                <CheckCircle size={16} className="text-green-400" />
-                <span className="text-zinc-300">40% reduction in ECU flashing time (Fisker)</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle size={16} className="text-green-400" />
-                <span className="text-zinc-300">60% faster remote diagnostics (Rivian)</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle size={16} className="text-green-400" />
-                <span className="text-zinc-300">50% reduction in field time (Tesla)</span>
-              </div>
-            </div>
+    {/* ROI Calculator Section */}
+    <section id="roi-calculator" className="py-32 relative">
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-green-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
+      </div>
+      
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-6xl font-bold text-white mb-4">
+            ROI <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Calculator</span>
+          </h2>
+          <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
+            Calculate the return on investment for advanced diagnostic training and process optimization based on real-world results
+          </p>
+        </div>
+        
+        <ROICalculator />
+      </div>
+    </section>
+
+    {/* Training Section - Updated */}
+    <section id="training" className="py-32 relative">
+      <div className="absolute inset-0 z-0">
+        <div className="absolute bottom-1/3 right-1/3 w-64 h-64 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
+      </div>
+      
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-6xl font-bold text-white mb-4">
+            Instructional Design / <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Training</span>
+          </h2>
+          <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
+            Custom instructional design and training facilitation tailored to elevate technical expertise, optimize diagnostic workflows, and drive measurable performance improvements
+          </p>
+        </div>
+        
+        {/* EV Diagnostics Training - Featured */}
+        <div className="mb-16">
+          <div className="text-center mb-8">
+            <h3 className="text-2xl font-bold text-white mb-2">Featured: EV Diagnostics Training</h3>
+            <p className="text-zinc-400">Interactive PicoScope training for electric vehicle diagnostics</p>
           </div>
+          <EVDiagnosticsTraining />
+        </div>
+        
+        {/* Other Training Modules */}
+        <div className="border-t border-zinc-700/50 pt-16">
+          <div className="text-center mb-8">
+            <h3 className="text-2xl font-bold text-white mb-2">Additional Training Programs</h3>
+            <p className="text-zinc-400">Comprehensive modules for automotive diagnostics and process optimization</p>
+          </div>
+          <MockTrainingProgram />
         </div>
       </div>
-    </div>
-  )
-}
+    </section>
 
-// Contact Section Component
-function ContactSection() {
-  return (
+    {/* Contact Section */}
     <section id="contact" className="py-32 relative">
       <div className="absolute inset-0 z-0">
         <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
@@ -1655,239 +2313,82 @@ function ContactSection() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto">
-          <div className="space-y-8">
-            <div>
-              <h3 className="text-2xl font-bold text-white mb-6">Get In Touch</h3>
-              <div className="space-y-4">
-                <a href="mailto:ahmed@example.com" className="flex items-center gap-4 text-zinc-300 hover:text-purple-400 transition-colors">
-                  <Mail className="w-6 h-6" />
-                  <span>ahmed@example.com</span>
-                </a>
-                <a href="tel:+1234567890" className="flex items-center gap-4 text-zinc-300 hover:text-purple-400 transition-colors">
-                  <Phone className="w-6 h-6" />
-                  <span>+1 (234) 567-8900</span>
-                </a>
-                <div className="flex items-center gap-4 text-zinc-300">
-                  <MapPin className="w-6 h-6" />
-                  <span>Available for Remote & On-site Consulting</span>
-                </div>
+        <div className="max-w-4xl mx-auto">
+          <div className="flex justify-center items-center gap-12">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Mail className="w-8 h-8 text-white" />
               </div>
+              <a href="mailto:ahmed.osaid.pro@gmail.com" className="text-purple-400 hover:text-pink-400 transition-colors">
+                E-Mail
+              </a>
             </div>
-
-            <div>
-              <h4 className="text-xl font-semibold text-white mb-4">Connect on Social</h4>
-              <div className="flex gap-4">
-                <a href="https://linkedin.com" className="p-3 bg-zinc-800 hover:bg-purple-500 text-zinc-300 hover:text-white rounded-lg transition-colors">
-                  <Linkedin className="w-6 h-6" />
-                </a>
-                <a href="https://github.com" className="p-3 bg-zinc-800 hover:bg-purple-500 text-zinc-300 hover:text-white rounded-lg transition-colors">
-                  <Github className="w-6 h-6" />
-                </a>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Phone className="w-8 h-8 text-white" />
               </div>
+              <a href="tel:+16024022505" className="text-purple-400 hover:text-pink-400 transition-colors">
+                Call Me
+              </a>
             </div>
-          </div>
-
-          <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
-            <div className="relative p-8 bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-lg">
-              <h4 className="text-xl font-semibold text-white mb-6">Let's Discuss Your Project</h4>
-              <form className="space-y-4">
-                <div>
-                  <input 
-                    type="text" 
-                    placeholder="Your Name"
-                    className="w-full bg-zinc-700 border border-zinc-600 rounded-lg px-4 py-3 text-white placeholder-zinc-400 focus:border-purple-500 focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <input 
-                    type="email" 
-                    placeholder="Your Email"
-                    className="w-full bg-zinc-700 border border-zinc-600 rounded-lg px-4 py-3 text-white placeholder-zinc-400 focus:border-purple-500 focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <input 
-                    type="text" 
-                    placeholder="Subject"
-                    className="w-full bg-zinc-700 border border-zinc-600 rounded-lg px-4 py-3 text-white placeholder-zinc-400 focus:border-purple-500 focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <textarea 
-                    placeholder="Tell me about your project..."
-                    rows={4}
-                    className="w-full bg-zinc-700 border border-zinc-600 rounded-lg px-4 py-3 text-white placeholder-zinc-400 focus:border-purple-500 focus:outline-none resize-none"
-                  ></textarea>
-                </div>
-                <button 
-                  type="submit"
-                  className="w-full bg-purple-500 hover:bg-purple-600 text-white font-medium py-3 rounded-lg transition-colors"
-                >
-                  Send Message
-                </button>
-              </form>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Linkedin className="w-8 h-8 text-white" />
+              </div>
+              <a href="https://www.linkedin.com/in/ahmedosaid/" className="text-purple-400 hover:text-pink-400 transition-colors">
+                Connect with me
+              </a>
             </div>
           </div>
         </div>
       </div>
     </section>
-  )
-}
 
-// Main Page Component
-export default function HomePage() {
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
-  const [isModalOpen, setIsModalOpen] = useState(false)
-
-  const openProjectModal = (project: Project) => {
-    setSelectedProject(project)
-    setIsModalOpen(true)
-  }
-
-  const closeProjectModal = () => {
-    setSelectedProject(null)
-    setIsModalOpen(false)
-  }
-
-  return (
-    <main className="min-h-screen bg-gradient-to-b from-zinc-900 to-black text-white">
-      <FloatingNav />
+    {/* Footer */}
+    <footer className="bg-zinc-900/50 backdrop-blur-sm border-t border-zinc-700/50 py-12">
+      <div className="container mx-auto px-6">
+        <div className="text-center">
+          <p className="text-zinc-400 mb-4">
+            © 2025 Ahmed Said. Engineering excellence across industries.
+          </p>
+          <p className="text-sm text-zinc-500">
+            Tesla • Rivian • Fisker • Iridium • Verizon • Evaluate Consulting
+          </p>
+        </div>
+      </div>
+    </footer>
+  </div>
+)
+}ing KPI frameworks for new technology',
+        'Training teams on completely new diagnostic procedures'
+      ],
+      solutions: [
+        'Cloud-native diagnostic architecture for scalability',
+        'Integrated repair planning with diagnostic workflows',
+        'Comprehensive KPI tracking and milestone reporting',
+        'Detailed training materials and technical documentation'
+      ],
+      impact: 'Established foundation for Rivian\'s service operations with innovative cloud-based diagnostics, enabling efficient remote support for adventure vehicles.'
+    },
+    {
+      title: '3-Year Humanoid Robotics Service Strategy',
+      company: '1X Technologies',
+      period: '2024',
+      description: 'Comprehensive 3-year service strategy for humanoid robots featuring tiered support infrastructure, predictive maintenance algorithms, and ML-powered diagnostics for the $66B robotics market growing at 45.5% CAGR.',
+      achievements: [
+        'Designed 3-tier service support architecture (Tier 1: Basic Support → Tier 3: Field Engineers)',
+        'Established comprehensive KPI framework for humanoid robot fleet management',
+        'Created predictive maintenance strategy using ML algorithms and IoT sensors',
+        'Developed CRM workflow management system with JIRA integration',
+        'Designed regional OTA rollout strategy with homologation compliance',
+        'Implemented Flying Doctors/Service Partner Networks for unsupported regions'
+      ],
       
-      <HeroSection />
-      
-      <AboutSection />
-
-      {/* Experience Section */}
-      <section id="experience" className="py-32 relative">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute top-1/3 right-1/3 w-64 h-64 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
-          <div className="absolute bottom-1/4 left-1/4 w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
-        </div>
-
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-6xl font-bold text-white mb-4">
-              Professional <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Journey</span>
-            </h2>
-            <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
-              Two decades of transformative engineering leadership across cutting-edge automotive and technology sectors that redefine our connected world
-            </p>
-          </div>
-          
-          <VerticalTimeline />
-        </div>
-      </section>
-
-      {/* Enhanced Projects Section */}
-      <section id="projects" className="py-32 relative">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute top-1/3 left-1/3 w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
-        </div>
-        
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-6xl font-bold text-white mb-4">
-              Featured <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Projects</span>
-            </h2>
-            <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
-              Breakthrough engineering solutions that transformed operations and delivered measurable impact
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {projects.map((project, index) => (
-              <ProjectCard 
-                key={index} 
-                project={project}
-                onClick={() => openProjectModal(project)}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Project Modal */}
-      <ProjectModal 
-        project={selectedProject}
-        isOpen={isModalOpen}
-        onClose={closeProjectModal}
-      />
-
-      {/* Skills Section */}
-      <section id="skills" className="py-32 relative">
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-6xl font-bold text-white mb-4">
-              Technical <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Expertise</span>
-            </h2>
-            <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
-              Core competencies refined through 20+ years of hands-on engineering
-            </p>
-          </div>
-          
-          <SkillsGrid />
-        </div>
-      </section>
-
-      {/* ROI Calculator Section */}
-      <section id="roi-calculator" className="py-32 relative">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-green-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
-        </div>
-        
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-6xl font-bold text-white mb-4">
-              ROI <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Calculator</span>
-            </h2>
-            <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
-              Calculate the return on investment for advanced diagnostic training and process optimization based on real-world results
-            </p>
-          </div>
-          
-          <ROICalculator />
-        </div>
-      </section>
-
-      {/* Training Section - Updated */}
-      <section id="training" className="py-32 relative">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute bottom-1/3 right-1/3 w-64 h-64 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
-        </div>
-        
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-6xl font-bold text-white mb-4">
-              Instructional Design / <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Training</span>
-            </h2>
-            <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
-              Custom instructional design and training facilitation tailored to elevate technical expertise, optimize diagnostic workflows, and drive measurable performance improvements
-            </p>
-          </div>
-          
-          {/* EV Diagnostics Training - Featured */}
-          <div className="mb-16">
-            <div className="text-center mb-8">
-              <h3 className="text-2xl font-bold text-white mb-2">Featured: EV Diagnostics Training</h3>
-              <p className="text-zinc-400">Interactive PicoScope training for electric vehicle diagnostics</p>
-            </div>
-            <EVDiagnosticsTraining />
-          </div>
-          
-          {/* Other Training Modules */}
-          <div className="border-t border-zinc-700/50 pt-16">
-            <div className="text-center mb-8">
-              <h3 className="text-2xl font-bold text-white mb-2">Additional Training Programs</h3>
-              <p className="text-zinc-400">Comprehensive modules for automotive diagnostics and process optimization</p>
-            </div>
-            <MockTrainingProgram />
-          </div>
-        </div>
-      </section>
-
-      <ContactSection />
-    </main>
-  )
-}
+      serviceRequirements: {
+        year1: {
+          title: 'Year 1: Foundation & Hardware Focus',
+          description: 'Tier 3 (Field Service Engineers) for hardware failures requiring physical intervention',
+          details: [
+            'Establish
