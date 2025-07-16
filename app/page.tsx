@@ -1378,27 +1378,26 @@ function VerticalTimeline() {
 // Skills Grid Component
 function SkillsGrid() {
   const skills: Skill[] = [
-    { name: 'CAN/CAN-FD', level: 95 },
-    { name: 'UDS Protocols', level: 92 },
-    { name: 'ISO 13400', level: 88 },
-    { name: 'TT&C', level: 96 },
-    { name: 'Remote Debug', level: 90 },
-    
-    { name: 'DoIP', level: 94 },
-    { name: 'Python', level: 86 },
-    { name: 'SSH', level: 93 },
-    { name: 'ADAS', level: 85 },
-    { name: 'HV/LV Systems', level: 89 },
-    
     { name: 'Leadership', level: 97 },
-    { name: 'AutoCAD/CATIA', level: 94 },
+    { name: 'TT&C', level: 96 },
     { name: 'Training', level: 96 },
+    { name: 'CAN/CAN-FD', level: 95 },
+    { name: 'DoIP', level: 94 },
+    { name: 'AutoCAD/CATIA', level: 94 },
+    { name: 'SSH', level: 93 },
+    { name: 'React.js', level: 93 },
+    { name: 'UDS Protocols', level: 92 },
     { name: 'Repair Planning', level: 91 },
-    { name: 'React.js', level: 93 }
+    { name: 'Remote Debug', level: 90 },
+    { name: 'QGIS', level: 90 },
+    { name: 'HV/LV Systems', level: 89 },
+    { name: 'ISO 13400', level: 88 },
+    { name: 'Python', level: 86 },
+    { name: 'ADAS', level: 85 }
   ]
 
   return (
-    <div className="grid grid-cols-5 gap-4 max-w-4xl mx-auto">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
       {skills.map((skill, index) => (
         <div key={index} className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
@@ -1901,31 +1900,60 @@ export default function Portfolio() {
         'Deploy CRM workflow management system with incident reporting',
         'Knowledge base framework with troubleshooting procedures',
         'Regional OTA rollout strategy development'
-      ]
+      ],
+      solutions: [
+        'Cloud-native diagnostic architecture for scalability',
+        'Integrated repair planning with diagnostic workflows',
+        'Comprehensive KPI tracking and milestone reporting',
+        'Detailed training materials and technical documentation'
+      ],
+      impact: 'Established foundation for Rivian\'s service operations with innovative cloud-based diagnostics, enabling efficient remote support for adventure vehicles.'
     },
-    year2: {
-      title: 'Year 2: Advanced Remote Capabilities',
-      description: 'Tier 2 (Advanced Technicians) trained for remote diagnostics and complex issue resolution',
-      details: [
-        'Humanoid robots execute onboard customer training programs',
-        'Self-Service Portal for customers to log requests and track status',
-        'Threshold alerts trigger automated diagnostics reporting',
-        'Integration of lab-setting remote diagnostics into production systems',
-        'Predictive analytics for proactive service intervention'
-      ]
-    },
-    year3: {
-      title: 'Year 3: Autonomous Service Operations',
-      description: 'Tier 1 (Basic Support) with self-service portals and automated resolution',
-      details: [
-        'ML models deployed for self-diagnosis and resolution of non-HW defects',
-        'Humanoid robots conduct automated CSAT and NPS surveys',
-        'Real-time CRM integration with Robot Identification Number (RIN) tracking',
-        'Hardware engineering refinement using 3 years of predictive failure data',
-        'Flying Doctors deployment for global service coverage'
-      ]
-    }
-  },
+    {
+      title: '3-Year Humanoid Robotics Service Strategy',
+      company: '1X Technologies',
+      period: '2024',
+      description: 'Comprehensive 3-year service strategy for humanoid robots featuring tiered support infrastructure, predictive maintenance algorithms, and ML-powered diagnostics for the $66B robotics market growing at 45.5% CAGR.',
+      achievements: [
+        'Designed 3-tier service support architecture (Tier 1: Basic Support → Tier 3: Field Engineers)',
+        'Established comprehensive KPI framework for humanoid robot fleet management',
+        'Created predictive maintenance strategy using ML algorithms and IoT sensors',
+        'Developed CRM workflow management system with JIRA integration',
+        'Designed regional OTA rollout strategy with homologation compliance',
+        'Implemented Flying Doctors/Service Partner Networks for unsupported regions'
+      ],
+
+      serviceRequirements: {
+        year1: {
+          title: 'Year 1: Foundation & Hardware Focus',
+          description: 'Tier 3 (Field Service Engineers) for hardware failures requiring physical intervention',
+          details: [
+            'Establish'
+          ]
+        },
+        year2: {
+          title: 'Year 2: Advanced Remote Capabilities',
+          description: 'Tier 2 (Advanced Technicians) trained for remote diagnostics and complex issue resolution',
+          details: [
+            'Humanoid robots execute onboard customer training programs',
+            'Self-Service Portal for customers to log requests and track status',
+            'Threshold alerts trigger automated diagnostics reporting',
+            'Integration of lab-setting remote diagnostics into production systems',
+            'Predictive analytics for proactive service intervention'
+          ]
+        },
+        year3: {
+          title: 'Year 3: Autonomous Service Operations',
+          description: 'Tier 1 (Basic Support) with self-service portals and automated resolution',
+          details: [
+            'ML models deployed for self-diagnosis and resolution of non-HW defects',
+            'Humanoid robots conduct automated CSAT and NPS surveys',
+            'Real-time CRM integration with Robot Identification Number (RIN) tracking',
+            'Hardware engineering refinement using 3 years of predictive failure data',
+            'Flying Doctors deployment for global service coverage'
+          ]
+        }
+      },
   
   kpiFramework: {
     reliability: [
@@ -2269,7 +2297,7 @@ return (
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-6xl font-bold text-white mb-4">
-            Instructional Design / <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Training</span>
+            LX Design <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">& Training</span>
           </h2>
           <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
             Custom instructional design and training facilitation tailored to elevate technical expertise, optimize diagnostic workflows, and drive measurable performance improvements
@@ -2361,34 +2389,4 @@ return (
     </footer>
   </div>
 )
-}ing KPI frameworks for new technology',
-        'Training teams on completely new diagnostic procedures'
-      ],
-      solutions: [
-        'Cloud-native diagnostic architecture for scalability',
-        'Integrated repair planning with diagnostic workflows',
-        'Comprehensive KPI tracking and milestone reporting',
-        'Detailed training materials and technical documentation'
-      ],
-      impact: 'Established foundation for Rivian\'s service operations with innovative cloud-based diagnostics, enabling efficient remote support for adventure vehicles.'
-    },
-    {
-      title: '3-Year Humanoid Robotics Service Strategy',
-      company: '1X Technologies',
-      period: '2024',
-      description: 'Comprehensive 3-year service strategy for humanoid robots featuring tiered support infrastructure, predictive maintenance algorithms, and ML-powered diagnostics for the $66B robotics market growing at 45.5% CAGR.',
-      achievements: [
-        'Designed 3-tier service support architecture (Tier 1: Basic Support → Tier 3: Field Engineers)',
-        'Established comprehensive KPI framework for humanoid robot fleet management',
-        'Created predictive maintenance strategy using ML algorithms and IoT sensors',
-        'Developed CRM workflow management system with JIRA integration',
-        'Designed regional OTA rollout strategy with homologation compliance',
-        'Implemented Flying Doctors/Service Partner Networks for unsupported regions'
-      ],
-      
-      serviceRequirements: {
-        year1: {
-          title: 'Year 1: Foundation & Hardware Focus',
-          description: 'Tier 3 (Field Service Engineers) for hardware failures requiring physical intervention',
-          details: [
-            'Establish
+}
