@@ -33,11 +33,6 @@ interface Company {
   achievements: string[]
 }
 
-interface Skill {
-  name: string
-  level: number
-}
-
 interface Project {
   title: string
   company: string
@@ -1375,44 +1370,183 @@ function VerticalTimeline() {
   )
 }
 
-// Skills Grid Component
-function SkillsGrid() {
-  const skills: Skill[] = [
-    { name: 'Leadership', level: 97 },
-    { name: 'TT&C', level: 96 },
-    { name: 'Training', level: 96 },
-    { name: 'CAN/CAN-FD', level: 95 },
-    { name: 'DoIP', level: 94 },
-    { name: 'AutoCAD/CATIA', level: 94 },
-    { name: 'SSH', level: 93 },
-    { name: 'React.js', level: 93 },
-    { name: 'UDS Protocols', level: 92 },
-    { name: 'Repair Planning', level: 91 },
-    { name: 'Remote Debug', level: 90 },
-    { name: 'QGIS', level: 90 },
-    { name: 'HV/LV Systems', level: 89 },
-    { name: 'ISO 13400', level: 88 },
-    { name: 'Python', level: 86 },
-    { name: 'ADAS', level: 85 }
+// Enhanced Skills Showcase Component
+function SkillsShowcase() {
+  const [activeCategory, setActiveCategory] = useState('leadership')
+
+  interface SkillCategory {
+    id: string
+    name: string
+    icon: any
+    color: string
+    skills: Array<{
+      name: string
+      level: number
+      description: string
+      years?: number
+    }>
+  }
+
+  const skillCategories: SkillCategory[] = [
+    {
+      id: 'leadership',
+      name: 'Leadership & Management',
+      icon: Users,
+      color: 'from-purple-500 to-pink-500',
+      skills: [
+        { name: 'Cross-Cultural Team Leadership', level: 97, description: 'Led global teams across India, EU, and US with 6 direct reports', years: 8 },
+        { name: 'Product Management', level: 95, description: 'Agile development, roadmap execution, stakeholder alignment', years: 6 },
+        { name: 'Training & Development', level: 96, description: 'Trained 300+ engineers globally on advanced diagnostics', years: 15 },
+        { name: 'Stakeholder Alignment', level: 94, description: 'Executive reporting and strategic planning across organizations', years: 10 },
+        { name: 'Process Optimization', level: 92, description: 'Reduced costs by $6.2M+ through systematic efficiency gains', years: 12 }
+      ]
+    },
+    {
+      id: 'technical',
+      name: 'Automotive & Diagnostics',
+      icon: Wrench,
+      color: 'from-blue-500 to-cyan-500',
+      skills: [
+        { name: 'CAN/CAN-FD/LIN Protocols', level: 95, description: 'Advanced vehicle communication protocols and diagnostics', years: 8 },
+        { name: 'UDS & DoIP Implementation', level: 94, description: 'ISO 13400, 15765, 24089 diagnostic standards', years: 7 },
+        { name: 'ADAS & AutoPilot Systems', level: 88, description: 'Sensor fusion, calibration, and incident analysis', years: 6 },
+        { name: 'HV/LV Electric Systems', level: 89, description: 'High/low voltage diagnostics and safety protocols', years: 6 },
+        { name: 'Remote Diagnostics', level: 93, description: 'SSH, cloud-based troubleshooting, and system access', years: 8 },
+        { name: 'ECU Flashing & OTA', level: 91, description: 'Firmware management, deployment, and update systems', years: 7 }
+      ]
+    },
+    {
+      id: 'platforms',
+      name: 'Tools & Platforms',
+      icon: Settings,
+      color: 'from-green-500 to-emerald-500',
+      skills: [
+        { name: 'CANoe Suite Mastery', level: 94, description: 'Advanced vehicle network analysis and testing', years: 8 },
+        { name: 'Vehicle Spy & Analysis', level: 92, description: 'CAN bus monitoring, analysis, and debugging', years: 7 },
+        { name: 'JIRA & Agile Tools', level: 90, description: 'Project management and workflow optimization', years: 10 },
+        { name: 'AutoCAD & CATIA', level: 94, description: 'Technical design, documentation, and engineering', years: 12 },
+        { name: 'Cloud Platforms (AWS)', level: 85, description: 'IoT integration, real-time data processing', years: 4 },
+        { name: 'Python & Automation', level: 86, description: 'Scripting, data analysis, ML integration', years: 6 }
+      ]
+    },
+    {
+      id: 'strategy',
+      name: 'Strategy & Innovation',
+      icon: Brain,
+      color: 'from-orange-500 to-red-500',
+      skills: [
+        { name: 'Service Strategy Design', level: 95, description: '3-year humanoid robotics roadmap development', years: 5 },
+        { name: 'KPI Framework Development', level: 93, description: 'Reliability, scalability, customer experience metrics', years: 8 },
+        { name: 'ML/AI Implementation', level: 82, description: 'Predictive maintenance and failure analysis systems', years: 3 },
+        { name: 'UI/UX Design', level: 88, description: 'Diagnostic tool interfaces and user experience', years: 5 },
+        { name: 'Cost Optimization', level: 94, description: 'RFI/RFP processes, supplier negotiations, $2M+ savings', years: 10 }
+      ]
+    }
   ]
 
+  const activeSkills = skillCategories.find(cat => cat.id === activeCategory)?.skills || []
+
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-      {skills.map((skill, index) => (
-        <div key={index} className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
-          <div className="relative p-4 bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-lg text-center">
-            <h3 className="text-sm font-bold text-white mb-2">{skill.name}</h3>
-            <div className="w-full bg-zinc-700 rounded-full h-2 mb-2">
-              <div 
-                className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-1000"
-                style={{ width: `${skill.level}%` }}
-              ></div>
+    <div className="max-w-6xl mx-auto">
+      {/* Category Tabs */}
+      <div className="flex flex-wrap justify-center gap-4 mb-12">
+        {skillCategories.map((category) => (
+          <button
+            key={category.id}
+            onClick={() => setActiveCategory(category.id)}
+            className={cn(
+              "flex items-center gap-3 px-6 py-3 rounded-full font-medium transition-all duration-300",
+              activeCategory === category.id
+                ? `bg-gradient-to-r ${category.color} text-white shadow-lg`
+                : "bg-zinc-800/50 text-zinc-400 hover:text-white hover:bg-zinc-700/50"
+            )}
+          >
+            <category.icon size={20} />
+            <span className="hidden sm:inline">{category.name}</span>
+            <span className="sm:hidden">{category.name.split(' ')[0]}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* Skills Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {activeSkills.map((skill, index) => (
+          <div key={index} className="relative group">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
+            <div className="relative p-6 bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-lg h-full">
+              {/* Skill Header */}
+              <div className="flex items-start justify-between mb-4">
+                <h3 className="font-bold text-white text-lg leading-tight pr-2">{skill.name}</h3>
+                <div className="text-right flex-shrink-0">
+                  <div className="text-2xl font-bold text-purple-400">{skill.level}%</div>
+                  {skill.years && (
+                    <div className="text-xs text-zinc-500">{skill.years}+ years</div>
+                  )}
+                </div>
+              </div>
+
+              {/* Progress Bar */}
+              <div className="w-full bg-zinc-700 rounded-full h-3 mb-4 overflow-hidden">
+                <div 
+                  className={cn(
+                    "h-3 rounded-full transition-all duration-1000 bg-gradient-to-r",
+                    skillCategories.find(cat => cat.id === activeCategory)?.color || 'from-purple-500 to-pink-500'
+                  )}
+                  style={{ 
+                    width: `${skill.level}%`,
+                    transitionDelay: `${index * 100}ms`
+                  }}
+                ></div>
+              </div>
+
+              {/* Description */}
+              <p className="text-zinc-400 text-sm leading-relaxed">{skill.description}</p>
+
+              {/* Proficiency Level Indicator */}
+              <div className="mt-4 flex items-center gap-2">
+                <div className="flex gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <div
+                      key={i}
+                      className={cn(
+                        "w-2 h-2 rounded-full",
+                        i < Math.floor(skill.level / 20) 
+                          ? "bg-purple-400" 
+                          : "bg-zinc-600"
+                      )}
+                    />
+                  ))}
+                </div>
+                <span className="text-xs text-zinc-500">
+                  {skill.level >= 95 ? 'Expert' : 
+                   skill.level >= 90 ? 'Advanced' : 
+                   skill.level >= 80 ? 'Proficient' : 'Intermediate'}
+                </span>
+              </div>
             </div>
-            <span className="text-xs text-purple-400 font-medium">{skill.level}%</span>
           </div>
+        ))}
+      </div>
+
+      {/* Summary Stats */}
+      <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="text-center p-4 bg-zinc-800/30 rounded-lg border border-zinc-700/30">
+          <div className="text-2xl font-bold text-purple-400 mb-1">20+</div>
+          <div className="text-sm text-zinc-400">Years Experience</div>
         </div>
-      ))}
+        <div className="text-center p-4 bg-zinc-800/30 rounded-lg border border-zinc-700/30">
+          <div className="text-2xl font-bold text-blue-400 mb-1">6</div>
+          <div className="text-sm text-zinc-400">Major Companies</div>
+        </div>
+        <div className="text-center p-4 bg-zinc-800/30 rounded-lg border border-zinc-700/30">
+          <div className="text-2xl font-bold text-green-400 mb-1">300+</div>
+          <div className="text-sm text-zinc-400">Engineers Trained</div>
+        </div>
+        <div className="text-center p-4 bg-zinc-800/30 rounded-lg border border-zinc-700/30">
+          <div className="text-2xl font-bold text-pink-400 mb-1">32K+</div>
+          <div className="text-sm text-zinc-400">Issues Resolved</div>
+        </div>
+      </div>
     </div>
   )
 }
@@ -1928,7 +2062,11 @@ export default function Portfolio() {
           title: 'Year 1: Foundation & Hardware Focus',
           description: 'Tier 3 (Field Service Engineers) for hardware failures requiring physical intervention',
           details: [
-            'Establish'
+            'Establish diagnostics stations with mechanical, electrical, and software tools',
+            'Create lab checklists for daily, weekly, monthly maintenance',
+            'Deploy CRM workflow management system with incident reporting',
+            'Knowledge base framework with troubleshooting procedures',
+            'Regional OTA rollout strategy development'
           ]
         },
         year2: {
@@ -2257,14 +2395,14 @@ return (
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-6xl font-bold text-white mb-4">
-            Technical <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Expertise</span>
+            Core <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Skills</span>
           </h2>
           <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
-            Core competencies refined through 20+ years of hands-on engineering
+            Multi-domain expertise spanning leadership, automotive innovation, and strategic development
           </p>
         </div>
         
-        <SkillsGrid />
+        <SkillsShowcase />
       </div>
     </section>
 
